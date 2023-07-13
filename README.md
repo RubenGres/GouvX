@@ -1,4 +1,4 @@
-# gouvx.github.io
+# GouvX
 
 GouvX (Gouvernement eXpertise) est un assistant virtuel indépendant qui propose une interface textuelle alternative pour faciliter l'accès à l'information des sites gouvernementaux français.
 
