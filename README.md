@@ -1,3 +1,5 @@
+ <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
+
 # GouvX
 
 GouvX (Gouvernement eXpertise) est un assistant virtuel indépendant qui propose une interface textuelle alternative pour faciliter l'accès à l'information des sites gouvernementaux français.
