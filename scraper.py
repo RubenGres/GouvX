@@ -2,40 +2,28 @@ import requests
 from bs4 import BeautifulSoup
 
 
-class SoupScraper:
-    def __init__(self):
-        self.soups = {}
+class BasicScraper:
+    def __init__(self, text, url):
+        self.soup = BeautifulSoup(text, 'html.parser')
+        self.url = url
 
-    def reformat_link(self, link, url):
+    def reformat_link(self, link):
         if link[0] == '/':
-            return url + link
+            return self.url + link
 
         if link.startswith("http"):
             return link
         
         return 'http://' + link
-
-    def get(self, url):
-        if url in self.soups:
-            return self.soups[url]
-
-        response = requests.get(url)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        self.soups[url] = soup
-
-        return soup
     
-    
-    def scrape_text(self, url):
-        soup = self.get(url)
-        text_content = soup.get_text()
+
+    def scrape_text(self):
+        text_content = self.soup.get_text()
         return text_content
     
 
-    def scrape_links(self, url):
-        soup = self.get(url)
-
-        link_tags = soup.find_all('a')
+    def scrape_links(self):
+        link_tags = self.soup.find_all('a')
         
         # Extract the URLs from the <a> tags
         links = []
@@ -46,15 +34,12 @@ class SoupScraper:
 
         links = list(filter(lambda x: '#' not in x, links))
 
-        links = list(set([self.reformat_link(l, url) for l in links]))
+        links = list(set([self.reformat_link(l) for l in links]))
 
         return links
     
-    
-    def scrape_img_url(self, url):
-        soup = self.get(url)
-
-        img_tags = soup.find_all('img')
+    def scrape_img_url(self):
+        img_tags = self.soup.find_all('img')
         
         # Extract the URLs from the <a> tags
         imgs = []
@@ -62,11 +47,19 @@ class SoupScraper:
             img = img_tag.get('src')
             
             if img:
-                imgs.append(self.reformat_link(img, url))
+                imgs.append(self.reformat_link(img))
 
         return imgs
 
-
-    def get_headers(self, url):
-        response = requests.head(url)
+    def get_headers(self):
+        response = requests.head(self.url)
         return response.headers
+
+    def parse_page(self):
+        return {
+            "url": self.url,
+            "text": self.scrape_text(),
+            "images": self.scrape_img_url(),
+            "links": self.scrape_links()
+        }
+    
