@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup
 
 
 class BasicScraper:
-    def __init__(self, text, url):
-        self.soup = BeautifulSoup(text, 'html.parser')
-        self.url = url
+    def __init__(self, response):
+        self.soup = BeautifulSoup(response.text, 'html.parser')
+        self.url = response.url
 
     def reformat_link(self, link):
         if link[0] == '/':

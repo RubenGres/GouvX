@@ -17,7 +17,7 @@ class MySpider(scrapy.Spider):
     start_urls = [STARTURL]  # Replace with the initial URL you want to crawl
 
     def parse(self, response):
-        scraper = BasicScraper(response.text, response.url)
+        scraper = BasicScraper(response)
 
         # Use BeautifulSoup manager to parse the page and extract required information
         parsed_data = scraper.parse_page()
@@ -27,10 +27,7 @@ class MySpider(scrapy.Spider):
 
         # Follow links to other pages, if needed
         for next_page_url in scraper.scrape_links():
-            if 'service-public' in next_page_url:
-                print('_________________')
-                print(next_page_url)
-                print('_________________')
+            if 'service-public' in next_page_url.split('/')[2]:
                 yield response.follow(next_page_url, callback=self.parse)
 
     def process_data(self, data):
