@@ -33,8 +33,9 @@ class BasicScraper:
                 links.append(link)
 
         links = list(filter(lambda x: '#' not in x, links))
-
         links = list(set([self.reformat_link(l) for l in links]))
+
+        links = [link.split('?')[0] for link in links]
 
         return links
     
