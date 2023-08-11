@@ -22,7 +22,7 @@ class BasicScraper:
         return text_content
     
 
-    def scrape_links(self):
+    def scrape_links(self, str_filter=None):
         link_tags = self.soup.find_all('a')
         
         # Extract the URLs from the <a> tags
@@ -37,7 +37,15 @@ class BasicScraper:
 
         links = [link.split('?')[0] for link in links]
 
-        return links
+        if str_filter:
+            filtered = []
+            for link in links:
+                if str_filter in link:
+                    filtered.append(link)
+        else:
+            filtered = links
+
+        return filtered
     
     def scrape_img_url(self):
         img_tags = self.soup.find_all('img')

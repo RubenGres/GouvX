@@ -9,7 +9,7 @@ sys.path.append("/workspaces/scrapper")
 from scraper import BasicScraper
 
 STARTURL = "https://www.service-public.fr"
-OUTPUT_DIR = "/workspaces/data"
+OUTPUT_DIR = "/workspaces/data2"
 
 class MySpider(scrapy.Spider):
     name = 'my_spider'
@@ -26,9 +26,8 @@ class MySpider(scrapy.Spider):
         self.process_data(parsed_data)
 
         # Follow links to other pages, if needed
-        for next_page_url in scraper.scrape_links():
-            if next_page_url.startswith(STARTURL):
-                yield response.follow(next_page_url, callback=self.parse)
+        for next_page_url in scraper.scrape_links(str_filter="service-public.fr"):
+            yield response.follow(next_page_url, callback=self.parse)
 
     def process_data(self, data):
         filename = hashlib.sha256(data['url'].encode('ascii')).hexdigest()
