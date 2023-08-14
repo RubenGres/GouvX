@@ -1,9 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-
+import re
 
 class BasicScraper:
     def __init__(self, response):
+        self.response = response
         self.soup = BeautifulSoup(response.text, 'html.parser')
         self.url = response.url
 
@@ -22,7 +23,7 @@ class BasicScraper:
         return text_content
     
 
-    def scrape_links(self, str_filter=None):
+    def scrape_links(self, include=None, exclude=None):
         link_tags = self.soup.find_all('a')
         
         # Extract the URLs from the <a> tags
@@ -37,15 +38,15 @@ class BasicScraper:
 
         links = [link.split('?')[0] for link in links]
 
-        if str_filter:
-            filtered = []
-            for link in links:
-                if str_filter in link:
-                    filtered.append(link)
-        else:
-            filtered = links
+        if include:
+            pattern = re.compile(include)
+            links = [link for link in links if pattern.search(link)]
 
-        return filtered
+        if exclude:
+            pattern = re.compile(exclude)
+            links = [link for link in links if not pattern.search(link)]
+
+        return links
     
     def scrape_img_url(self):
         img_tags = self.soup.find_all('img')
@@ -68,6 +69,7 @@ class BasicScraper:
         return {
             "url": self.url,
             "text": self.scrape_text(),
+            #"body": self.response.text,
             "images": self.scrape_img_url(),
             "links": self.scrape_links()
         }
