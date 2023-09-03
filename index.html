@@ -6,183 +6,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GouvX</title>
     <link rel="shortcut icon" type="image/png" href="favicon.png">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .chat-container {
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #eeeeee;
-            background-color: rgb(245, 245, 245);
-            border-radius: 5px;
-        }
-
-        .author-footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .chat-box {
-            display: flex;
-            flex-direction: column;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-
-        .message-box {
-            display: flex;
-            margin-bottom: 10px;
-        }
-
-        .user.message-box {
-            align-self: flex-end;
-        }
-
-        .bot.message-box {
-            align-self: flex-start;
-        }
-
-        .profile-pic {
-            margin-top: 10px;
-            width: 30px;
-            height: 30px;
-            min-width: 30px;
-            min-height: 30px;
-            border-radius: 50%;
-        }
-
-        .bot .profile-pic {
-            background-image: url('favicon.png');
-            background-size: cover;
-            margin-right: 10px;
-        }
-
-        .user .profile-pic {
-            background-color: #007bff; /* change color as needed */
-            background-size: cover;
-            margin-left: 10px;
-        }
-
-        .message {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .input-group {         
-            width: 100%;
-            max-height: 1000px;
-            position: relative;
-        }
-
-        .input-group input {
-            height: auto;
-        }
-
-        #user-input {
-            resize: none;
-            overflow-y: scroll;
-            height: 45px;
-            padding-right: 40px;
-            max-height: 400px;
-        }
-
-        #send-btn {
-            position: absolute;
-            height: 35px;
-            width: 35px;
-            right: 5px;
-            bottom: 5px;
-            padding: 3px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container mt-5">
 
         <div class="alert alert-info" role="alert">
-            <b>GouvX</b> facilite l'accès à l'information sur <a
-                href="https://www.service-public.fr">service-public.fr</a>.
-            Ce chatbot est une initiative citoyenne indépendante et apartisanne. <a href="https://www.gouvx.fr">En
-                savoir plus</a>
+            <b>GouvX</b> s'appuie sur <a href="https://www.service-public.fr">service-public.fr</a> pour t'assister dans
+            tes démarches administratives.
+            <a href="#about" data-bs-toggle="modal" data-bs-target="#overlayModal">En savoir plus</a>
         </div>
 
         <div class="chat-container">
 
             <div class="chat-box" id="chat-box">
 
+                <div class="message-box bot">
+                    <div class="bot">
+                        <div class="profile-pic"></div>
+                        <div class="message">
+                            Bonjour! Comment est ce que je peux vous aider aujourd'hui ?
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="input-group">
-                <textarea class="form-control" placeholder="Écrit un message..." id="user-input" rows="1" oninput="adjustRows(this)"></textarea>
+                <textarea class="form-control" placeholder="Écrit un message..." id="user-input" rows="1"
+                    oninput="adjustRows(this)"></textarea>
                 <div class="input-group-append">
                     <button class="btn btn-primary" type="button" id="send-btn">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="send-icon">
-                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2 .01 7z" fill="white"/>
-                            <path d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2 .01 7z" fill="white" />
+                            <path d="M0 0h24v24H0z" fill="none" />
                         </svg>
                     </button>
                 </div>
             </div>
-            
+
         </div>
         <div class="author-footer">
-            Created by <a href="https://rubengr.es">Ruben Gres</a> | <a href="https://github.com/gouvx"
-                target="_blank"><img src="github-logo.png" alt="GitHub" class="github-logo"></a>
+            Créé par <a href="https://rubengr.es">Ruben Gres</a> | <a href="https://github.com/gouvx"
+                target="_blank">GitHub</a>
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const chatBox = document.getElementById("chat-box");
-            const userInput = document.getElementById("user-input");
-            const sendBtn = document.getElementById("send-btn");
+    <div class="modal fade" id="overlayModal" tabindex="-1" aria-labelledby="overlayModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="overlayModalLabel">C'est quoi GouvX ?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <b> GouvX </b> (<b>Gouv</b>ernement e<b>X</b>plicable) est un assistant textuel virtuel qui
+                    centralise et facilite l'accés à l'information des sites gouvernementaux français.
 
-            sendBtn.addEventListener("click", function () {
-                const message = userInput.value.trim();
-                if (message !== "") {
+                    <br><br>
 
-                    const userMessage = `
-                        <div class="message-box alert user">
-                            <div class="message alert-primary">${message}</div>
-                            <div class="profile-pic"></div>
-                        </div>`;
+                    Actuellement GouvX se base seulement sur <a
+                        href="https://www.service-public.fr">service-public.fr</a>
+                    mais dans le futur j'aimerai étendre sa base de connaissance à
+                    <a href="https://www.data.gouv.fr/fr/datasets/listes-des-sites-gouv-fr/"> tous les sites en
+                        .gouv.fr</a>, à commencer par code.travail.gouv.fr, legifrance.gouv.fr et vie-publique.fr.
 
-                    const botMessage = `
-                        <div class="message-box alert bot">
-                            <div class="profile-pic"></div>
-                            <div class="message alert-success">${message}</div>
-                        </div>`;
+                    <br><br>
 
-                    chatBox.innerHTML += userMessage;
-                    chatBox.innerHTML += botMessage;
+                    L'objectif est de favoriser une meilleure compréhension des sujets traités par le
+                    gouvernement, d'encourager la réflexion citoyenne et de faciliter l'accès à l'information.
+                    <br><br>
+                    En mettant en œuvre des modèles de langage avancés (LLM), le projet aspire également à démontrer
+                    l'utilité démocratique de ces technologies émergentes. C'est une initiative citoyenne indépendante
+                    et
+                    apartisanne. L'entièreté du code source est accessible librement sur <a
+                        href="https://github.com/gouvx" target="_blank"> Github</a>.
 
-                    userInput.value = "";
-                    userInput.style.height = "45px";
-                }
-            });
+                    <br><br>
 
-            userInput.addEventListener("keyup", function (event) {
-                if (event.key === "Enter") {
-                    sendBtn.click();
-                }
-            });
-        });
+                    Si le projet vous intéresse vous pouvez me contacter par mail à l'adresse <a
+                        href="mailto:rubengres@proton.net">rubengres@proton.net</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        function adjustRows(textarea) {
-            textarea.style.height = "45px";
-            textarea.style.height = (25+textarea.scrollHeight)+"px"
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="chatbot.js"></script>
 
 </body>
 
