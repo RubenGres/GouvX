@@ -33,35 +33,43 @@ def parse_element(element):
 
     for elem in elements:
         if hasattr(elem, "children"):
-            for child in elem.children:
-                if child.name and len(child.name) == 2 and child.name.startswith('h'):
-                    header_level = int(child.name[1])
-                    output += f'\n\n{"#"*header_level} {parse_element(child)}:\n'
-                elif child.name == 'li':
-                    output += f'\n- {parse_element(child)}'
-                elif child.name == 'p':
-                    output += f'\n{parse_element(child)}'
-                elif child.name == 'table':
-                    output += parse_table(child)
-                elif child.name == 'a':
-                    output += parse_link(child)
+            # Recursively process children
+            child_output = parse_element(list(elem.children))
+            if elem.name and len(elem.name) == 2 and elem.name.startswith('h'):
+                header_level = int(elem.name[1])
+                output += f'\n\n{"#" * header_level} {child_output}:\n'
+            elif elem.name == 'li':
+                output += f'\n- {child_output}'
+            elif elem.name == 'p':
+                output += f'\n{child_output}'
+            elif elem.name == "strong":
+                if len(list(elem.parent.children)) == 1 and elem.parent.name == "p" and elem.get_text() == elem.parent.get_text():
+                    output += f'\n##### {child_output}'
                 else:
-                    output += f'{parse_element(child)}'
+                    output += elem.get_text()
+            elif elem.name == 'table':
+                output += parse_table(elem)
+            elif elem.name == 'a':
+                output += parse_link(elem)
+            else:
+                output += child_output
         else:
-            return f'{elem.get_text()}'
+            # Base case: If there are no children, just append the text
+            output += elem.get_text()
     
     return output
-
 
 
 def get_tabs(soup):
     main_div = soup.find('main', id='main')
     article = main_div.find('article')
     fiche = article.find('div', id="expired", attrs={"data-test": "div-content-fiche"})
-    
+        
     tabs = fiche.select('[id^="main-tabs-situation-content-"], [data-toggle-scope-seeall="chapters"]')
+    
     if not tabs:
-        text_content = fiche.find_all("p", attrs={"data-test": "contenu-texte"})
+        text_content = fiche
+
         return zip(['']*len(text_content), text_content)
 
     tab_header = fiche.find(class_="fr-tabs__list")
@@ -109,6 +117,7 @@ def get_metadata(soup):
         "intro": intro
     }
 
+
 def parse_chapter(chapter):
     output = ""
 
@@ -119,6 +128,10 @@ def parse_chapter(chapter):
     output += parse_element(chapter_content)
 
     return output
+
+
+def trim_bottom(text):
+    return text.split("## Cette page vous a-t-elle été utile")[0]
 
 
 class ServicePublicScraper:
@@ -137,13 +150,16 @@ class ServicePublicScraper:
         return 'http://' + link
     
 
-    def scrape_text(self):
+    def scrape_text(self, trim=True):
         output = ""
 
         for tab_title, tab_content in get_tabs(self.soup):
             output += f'{tab_title}'
             for tab_text in parse_tabs(tab_content):
                 output += tab_text
+
+        if trim:
+            output = trim_bottom(output)
 
         return output
     
