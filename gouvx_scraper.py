@@ -8,7 +8,7 @@ def parse_table(table):
 
     for i, row in enumerate(rows):
         cells = row.find_all(['th', 'td'])
-        cell_texts = [cell.get_text(strip=True) for cell in cells]
+        cell_texts = [parse_element(cell) for cell in cells]
 
         if i == 0:
             output += "|" + "|".join(cell_texts) + "|\n"  # Header row
@@ -20,10 +20,14 @@ def parse_table(table):
 
 
 def parse_link(link):
-    link_text = link.get_text()
+    link_text = link.get_text().strip()
     link_url = link.get('href')
     return f'[{link_text}]({link_url})'
 
+
+def parse_quote(child_output):
+    quoted_pg = '> ' + '\n> '.join(child_output.split('\n'))
+    return f"\n\n{quoted_pg}\n\n"
 
 def parse_element(element):
     # Initialize an empty string to store the result
@@ -35,22 +39,32 @@ def parse_element(element):
         if hasattr(elem, "children"):
             # Recursively process children
             child_output = parse_element(list(elem.children))
+
+            # Oh Lord please forgive me for this if statement 
             if elem.name and len(elem.name) == 2 and elem.name.startswith('h'):
                 header_level = int(elem.name[1])
-                output += f'\n\n{"#" * header_level} {child_output}:\n'
+                output += f'\n\n{"#" * header_level}  {child_output}:\n'
+            elif elem.name == 'ul':
+                output += "\n- " + "\n- ".join(child_output.strip().split('\n'))
             elif elem.name == 'li':
-                output += f'\n- {child_output}'
+                output += f'{child_output}\n'
             elif elem.name == 'p':
-                output += f'\n{child_output}'
+                output += f'{child_output} '
             elif elem.name == "strong":
                 if len(list(elem.parent.children)) == 1 and elem.parent.name == "p" and elem.get_text() == elem.parent.get_text():
-                    output += f'\n##### {child_output}'
+                    output += f'\n##### {child_output}\n'
                 else:
                     output += elem.get_text()
             elif elem.name == 'table':
                 output += parse_table(elem)
             elif elem.name == 'a':
                 output += parse_link(elem)
+            elif elem.name == 'div' and elem.get('data-test') == 'citation':
+                output += parse_quote(child_output)
+            elif elem.name == 'div' and elem.get('class') and "sp-complement" in elem.get('class'):
+                output += parse_quote(child_output)
+            elif elem.name == 'span' and elem.get('data-test') == "titleContentForDefinition":
+                 output += ""
             else:
                 output += child_output
         else:
@@ -74,7 +88,7 @@ def get_tabs(soup):
 
     tab_header = fiche.find(class_="fr-tabs__list")
     if tab_header:
-        tab_names = [f'#{name.get_text()}\n\n' for name in tab_header.find_all('li')]
+        tab_names = [f'# {name.get_text()}\n\n' for name in tab_header.find_all('li')]
         return zip(tab_names, tabs)
     else:
         return zip([''], tabs)
@@ -122,7 +136,7 @@ def parse_chapter(chapter):
     output = ""
 
     chapter_title = chapter.find(class_='sp-chapter-title').get_text()
-    output += f'##{chapter_title}\n'
+    output += f'## {chapter_title}\n'
 
     chapter_content = chapter.find("div", class_="sp-chapter-content")
     output += parse_element(chapter_content)
