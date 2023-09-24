@@ -91,7 +91,7 @@ function parse_response_metadata(metadata, message_number) {
 
 
 function ask_gouvx(question, message_number) {
-    const url = 'http://127.0.0.1:45900/ask/';
+    const url = 'http://35.223.5.115:45900/ask/';
     const postData = new URLSearchParams({
         q: question,
         h: JSON.stringify(chat_history)
