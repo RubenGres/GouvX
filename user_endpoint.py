@@ -1,13 +1,10 @@
 import openai
 import os
 import logging
-
 from dotenv import load_dotenv
 from flask import Flask, request, Response, stream_with_context
 from flask_cors import CORS
 from flask_socketio import SocketIO
-
-import openai
 import weaviate
 import json
 
@@ -50,7 +47,7 @@ def ask():
 
     print("question", question)
     try:
-        prompt, query_results, chatgpt_generator = ask_gouvx(question, client=client, model=None, n_results=3, history=history)
+        prompt, query_results, chatgpt_generator = ask_gouvx(question, client=client, model=None, n_results=1, history=history)
     except ValueError:
         query_results = None
         chatgpt_generator = (lambda _: "Désolé j'ai atteint mon quota de réponses pour le moment")("")
@@ -64,7 +61,6 @@ def ask():
             yield line.encode('utf-8')
 
     return Response(stream_with_context(response_stream(chatgpt_generator, query_results)), mimetype='text/plain', direct_passthrough=True)
-
 
 if __name__ == "__main__":
     socketio.run(app=app, host='0.0.0.0', port=45900, debug=True)

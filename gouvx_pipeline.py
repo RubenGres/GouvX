@@ -1,7 +1,7 @@
-from vector_query import get_semantically_close_text, get_around_paragraph
+from vector_query import get_semantically_close_text
 import openai
 
-def get_prompt(client, question, query_results, context_lines=3):
+def get_prompt(client, question, query_results):
   text = f"""A partir des ces sites répondez aux questions en fin de document.
   La réponse devra être la plus claire et détaillée possible et se conformer à cette convention de nommage:
 
@@ -13,7 +13,7 @@ def get_prompt(client, question, query_results, context_lines=3):
     for i, result in enumerate(query_results, start=1):
       title = result["title"]
       url = result["url"]
-      paragraph = get_around_paragraph(client, result["url"], result["paragraph"], result["line_n"], context_lines)
+      paragraph = get_semantically_close_text(question, client)
 
       text += f"""
       <a href="{url}">[{i}] {title} </a>:
@@ -46,8 +46,6 @@ def query_llm(prompt, history=None):
       if content is not None:
           yield(content)
 
-    
-
 
 def ask_gouvx(question, client, model=None, n_results=1, history=None):
   if not history:
@@ -60,7 +58,8 @@ def ask_gouvx(question, client, model=None, n_results=1, history=None):
 
     prompt = get_prompt(client, question, query_results)
   else:
-    query_results = None
+    print(history)
+    query_results = ""
     prompt = question
 
   chatgpt_generator = query_llm(prompt, history)
