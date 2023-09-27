@@ -58,7 +58,6 @@ def ask_gouvx(question, client, model=None, n_results=1, history=None):
 
     prompt = get_prompt(client, question, query_results)
   else:
-    print(history)
     query_results = ""
     prompt = question
 

@@ -10,6 +10,15 @@ import json
 
 from gouvx_pipeline import ask_gouvx
 
+from gevent import pywsgi
+from geventwebsocket.handler import WebSocketHandler
+from flask_socketio import SocketIO
+
+import ssl
+
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+ssl_context.load_cert_chain("/etc/letsencrypt/live/gouvxapi.gouvx.fr/fullchain.pem", '/etc/letsencrypt/live/gouvxapi.gouvx.fr/privkey.pem')
+
 load_dotenv()
 
 OPENAI_KEY = os.getenv("OPENAI_KEY")
@@ -19,7 +28,6 @@ HUGGINGFACE_KEY = os.getenv('HUGGINGFACE_KEY')
 
 app = Flask(__name__)
 #CORS(app)
-socketio = SocketIO(app, cors_allowed_origins="*")
 openai.api_key = OPENAI_KEY
 logging.info("api key passed to openAI")
 
@@ -62,5 +70,10 @@ def ask():
 
     return Response(stream_with_context(response_stream(chatgpt_generator, query_results)), mimetype='text/plain', direct_passthrough=True)
 
-if __name__ == "__main__":
-    socketio.run(app=app, host='0.0.0.0', port=45900, debug=True)
+
+socketio = SocketIO(app, server='gevent', ssl_context=ssl_context)
+
+if __name__ == '__main__':
+    socketio.run(app, host='0.0.0.0', port=443, debug=True, keyfile='/etc/letsencrypt/live/gouvxapi.gouvx.fr/privkey.pem', certfile='/etc/letsencrypt/live/yourdomain.com/fullchain.pem')
+
+"/etc/letsencrypt/live/gouvxapi.gouvx.fr/fullchain.pem", 
