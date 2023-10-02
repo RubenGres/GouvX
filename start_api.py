@@ -16,9 +16,10 @@ OPENAI_KEY = os.getenv("OPENAI_KEY")
 WEAVIATE_ENDPOINT = os.getenv('WEAVIATE_ENDPOINT')
 WEAVIATE_KEY = os.getenv('WEAVIATE_KEY')
 HUGGINGFACE_KEY = os.getenv('HUGGINGFACE_KEY')
+PORT = os.getenv('PORT')
 
 app = Flask(__name__)
-#CORS(app)
+
 openai.api_key = OPENAI_KEY
 logging.info("api key passed to openAI")
 
@@ -64,4 +65,4 @@ def ask():
 socketio = SocketIO(app)
 
 if __name__ == '__main__':
-    socketio.run(app, host="0.0.0.0", port="80", debug=True, ssl_context=('/etc/letsencrypt/live/gouvxapi.gouvx.fr/privkey.pem', '/etc/letsencrypt/live/gouvxapi.gouvx.fr/fullchain.pem'))
+    socketio.run(app, host="0.0.0.0", port=PORT, debug=True)
