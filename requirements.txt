@@ -2,3 +2,4 @@ transformers
 sentence_transformers
 weaviate-client==3.22.1
 openai
+python-dotenv
