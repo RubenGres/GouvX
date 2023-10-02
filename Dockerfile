@@ -8,8 +8,8 @@ COPY . /app
 
 RUN pip install -r requirements.txt
 
-ENV PORT 80
+ENV PORT 8080
 
 EXPOSE $PORT
 
-CMD ["python", "start_api.py"]
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app

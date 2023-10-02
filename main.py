@@ -61,8 +61,3 @@ def ask():
             yield line.encode('utf-8')
 
     return Response(stream_with_context(response_stream(chatgpt_generator, query_results)), mimetype='text/plain', direct_passthrough=True)
-
-socketio = SocketIO(app)
-
-if __name__ == '__main__':
-    socketio.run(app, host="0.0.0.0", port=PORT, debug=True)
