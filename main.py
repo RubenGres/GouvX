@@ -19,6 +19,7 @@ HUGGINGFACE_KEY = os.getenv('HUGGINGFACE_KEY')
 PORT = os.getenv('PORT')
 
 app = Flask(__name__)
+CORS(app)
 
 openai.api_key = OPENAI_KEY
 logging.info("api key passed to openAI")
