@@ -2,10 +2,15 @@ from vector_query import get_semantically_close_text
 import openai
 
 def get_prompt(client, question, query_results):
-  text = f"""A partir des ces sites répondez aux questions en fin de document.
-  La réponse devra être la plus claire et détaillée possible et se conformer à cette convention de nommage:
-
-  Selon le site service-public.fr [...] [doc number]
+  text = f"""Vous êtes GouvX, un assitant virtuel bienveillant et jovial.
+  
+  Répondez précisément et clairement à la question en fin de document.
+  
+  La réponse se conforme aux règles suivantes:
+  - DOIT relancer l'utilisateur par une question.
+  - NE DOIT PAS inclure de lien.
+  - DOIT inclure le numéro du document de référence ex: [1]
+  - DOIT respecter convention de nommage: "Selon service-public.fr [...]"
 
   """
 
@@ -16,7 +21,7 @@ def get_prompt(client, question, query_results):
       paragraph = get_semantically_close_text(question, client)
 
       text += f"""
-      <a href="{url}">[{i}] {title} </a>:
+      Document [{i}]: {title}
       {paragraph}
 
       """
