@@ -2,14 +2,12 @@ from vector_query import get_semantically_close_text
 import openai
 
 def get_prompt(client, question, query_results):
-  text = f"""Vous êtes GouvX, un assitant virtuel bienveillant et jovial.
+  text = f"""Vous êtes GouvX, un assitant virtuel bienveillant et serviable.
   
   Répondez précisément et clairement à la question en fin de document.
   
   La réponse se conforme aux règles suivantes:
-  - DOIT relancer l'utilisateur par une question.
   - NE DOIT PAS inclure de lien.
-  - DOIT inclure le numéro du document de référence ex: [1]
   - DOIT respecter convention de nommage: "Selon service-public.fr [...]"
 
   """
