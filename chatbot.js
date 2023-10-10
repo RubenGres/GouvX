@@ -35,7 +35,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="message-box bot">
                     <div class="bot">
                         <div class="profile-pic"></div>
-                        <div class="message" id="botmessage${message_count}"></div>
+                        <div class="message" id="botmessage${message_count}">
+                            <div class="loading"></div>
+                        </div>
                     </div>
 
                     <div class="sources" id="botsources${message_count}"></div>
@@ -97,6 +99,9 @@ function ask_gouvx(question, message_number) {
         h: JSON.stringify(chat_history)
     });
 
+    const loader = document.querySelector('.loading')
+    loader.classList.add('display')
+
     fetch(url, {
         method: 'POST',
         body: postData,
@@ -154,6 +159,7 @@ function ask_gouvx(question, message_number) {
                 }
             });
         })
+        .then(() => loader.remove())
         .then(stream => new Response(stream))
         .then(response => response.text())
         .then(data => {

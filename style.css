@@ -1,122 +1,150 @@
+.loading {
+  border: 4px solid #eeeeee;
+  border-top: 4px solid hsl(120, 100%, 30%);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 2s linear infinite;
+  visibility: hidden;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading.display {
+    visibility: visible;
+}
+
 .chat-container {
-    margin: auto;
-    max-width: 800px;
-    padding: 20px;
-    border: 1px solid #eeeeee;
-    background-color: rgb(245, 245, 245);
-    border-radius: 5px;
+  margin: auto;
+  max-width: 800px;
+  padding: 20px;
+  border: 1px solid #eeeeee;
+  background-color: rgb(245, 245, 245);
+  border-radius: 5px;
 }
 
 .author-footer {
-    text-align: center;
-    margin-top: 20px;
+  text-align: center;
+  margin-top: 20px;
 }
 
 .chat-box {
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 .message-box.bot {
-    align-self: flex-start;
+  align-self: flex-start;
 }
 
 .message-box.user {
-    align-self: flex-end;
+  align-self: flex-end;
 }
 
 .message-box .bot {
-    display: flex;
-    margin-bottom: 10px;
+  display: flex;
+  margin-bottom: 10px;
 }
 
 .message-box .user {
-    display: flex;
-    margin-bottom: 10px;
+  display: flex;
+  margin-bottom: 10px;
 }
 
 .message-box .sources {
-    font-size: 13px;
-    margin-left: 40px;
+  font-size: 13px;
+  margin-left: 40px;
 }
 
 .profile-pic {
-    margin-top: 10px;
-    width: 30px;
-    height: 30px;
-    min-width: 30px;
-    min-height: 30px;
-    border-radius: 50%;
+  margin-top: 10px;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  border-radius: 50%;
 }
 
 .bot .profile-pic {
-    background-image: url('favicon.png');
-    background-size: cover;
-    margin-right: 10px;
+  background-image: url('favicon.png');
+  background-size: cover;
+  margin-right: 10px;
 }
 
 .user .profile-pic {
-    background-color: #246cb8; /* change color as needed */
-    background-size: cover;
-    margin-left: 10px;
+  background-color: #246cb8; /* change color as needed */
+  background-size: cover;
+  margin-left: 10px;
 }
 
 .message {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    overflow-wrap: break-word;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow-wrap: break-word;
 }
 
 .bot .message {
-    background-color: #d6ffd6;
+  background-color: #d6ffd6;
 }
 
 .user .message {
-    background-color: #bceffc;
+  background-color: #bceffc;
 }
 
-.input-group {         
-    width: 100%;
-    max-height: 1000px;
-    position: relative;
+.input-group {
+  width: 100%;
+  max-height: 1000px;
+  position: relative;
 }
 
 .input-group input {
-    height: auto;
+  height: auto;
 }
 
 #user-input {
-    resize: none;
-    overflow-y: scroll;
-    height: 45px;
-    padding-right: 40px;
-    max-height: 400px;
+  resize: none;
+  overflow-y: scroll;
+  height: 45px;
+  padding-right: 40px;
+  max-height: 400px;
 }
 
 #send-btn {
-    position: absolute;
-    height: 35px;
-    width: 35px;
-    right: 5px;
-    bottom: 5px;
-    padding: 3px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
+  position: absolute;
+  height: 35px;
+  width: 35px;
+  right: 5px;
+  bottom: 5px;
+  padding: 3px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
 
 .alert-info {
-    text-align: center;
+  text-align: center;
 }
 
 .modal-backdrop {
-    background-color: rgba(0, 0, 0, 0.6); /* Adjust the alpha value to control darkness */
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.6
+  ); /* Adjust the alpha value to control darkness */
 }
