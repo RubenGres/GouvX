@@ -13,7 +13,7 @@ class LegifranceScrapper(scrapy.Spider):
     custom_settings = {
         'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
         'FEED_EXPORT_ENCODING' : 'utf-8',
-        'DOWNLOAD_DELAY': 1,
+        'DOWNLOAD_DELAY': 0.1,
     }
 
     def parse(self, response):
@@ -35,6 +35,7 @@ class LegifranceScrapper(scrapy.Spider):
         
         for article in response.xpath("//article"):
             article_ref = article.css('.name-article:not(.abrogated)').css('::text').get()
+            article_url = article.css('.name-article:not(.abrogated)').css('::attr(href)').get()
             
             article_content = article.css('.content:not(.content-abrogated)').css('::text').getall()
             article_content = ''.join(article_content)
@@ -42,12 +43,17 @@ class LegifranceScrapper(scrapy.Spider):
             if article_content == "":
                 continue
             
-            print("saved data: ", article_ref, article_content)
+            # print("saved data: ", article_ref, article_content)
             
             yield {
-                'hierarchie': hierarchie,
                 'article_ref': article_ref,
-                'article_content': article_content
+                'hierarchie': hierarchie,
+                'article_content': article_content,
+                'page_title': response.css('title::text').get(),
+                'proper_title': f'{hierarchie[0]} > {article_ref}',
+                'url': article_url,
+                'subdomain': 'legifrance',
+                'domain': 'gouv.fr'
             }
             
         
