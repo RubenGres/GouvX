@@ -5,5 +5,5 @@ Une liste non exhaustive des sites en *.gouv.fr peut être trouvée [ici](https:
 
 TODO:
 - [ ] créer un crawler pour code.travail.gouv.fr
-- [ ] créer un crawler pour legifrance.gouv.fr
+- [x] créer un crawler pour legifrance.gouv.fr
 - [ ] créer un crawler pour vie-publique.fr. 
