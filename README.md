@@ -1,6 +1,6 @@
 # GouvX webui
 
-**Code source de l'interface web de gouvx.fr**  
+**Code source de l'interface web de [gouvx.fr](https://www.gouvx.fr/)**  
 
 GouvX est une initiative citoyenne indépendante et apartisanne, son code source complet accessible librement sur Github.
 
