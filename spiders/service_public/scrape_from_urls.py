@@ -1,6 +1,6 @@
 import click
 from tqdm import tqdm
-from gouvx_scraper import ServicePublicScraper
+from service_public_scraper import ServicePublicScraper
 import requests
 import os
 import json

@@ -4,6 +4,6 @@ scrapy shell -s USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKi
 
 # run spider
 rm -rf legifrance.csv legifrance.log
-scrapy runspider legifrance_scrapper.py -o legifrance.csv --logfile legifrance.log
+scrapy runspider legifrance_scraper.py -o legifrance.csv --logfile legifrance.log
 
 ```

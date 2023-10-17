@@ -2,6 +2,94 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
+
+class ServicePublicScraper:
+    def __init__(self, response):
+        self.response = response
+        self.soup = BeautifulSoup(response.text, 'html.parser')
+        self.url = response.url
+
+    def reformat_link(self, link):
+        if link[0] == '/':
+            return self.url + link
+
+        if link.startswith("http"):
+            return link
+        
+        return 'http://' + link
+    
+
+    def scrape_text(self, trim=True):
+        output = ""
+
+        for tab_title, tab_content in get_tabs(self.soup):
+            output += f'{tab_title}'
+            for tab_text in parse_tabs(tab_content):
+                output += tab_text
+
+        if trim:
+            output = trim_bottom(output)
+
+        return output
+    
+
+    def scrape_links(self, include=None, exclude=None):
+        link_tags = self.soup.find_all('a')
+        
+        # Extract the URLs from the <a> tags
+        links = []
+        for link_tag in link_tags:
+            link = link_tag.get('href')
+            if link:
+                links.append(link)
+
+        links = list(filter(lambda x: '#' not in x, links))
+        links = list(set([self.reformat_link(l) for l in links]))
+
+        links = [link.split('?')[0] for link in links]
+
+        if include:
+            pattern = re.compile(include)
+            links = [link for link in links if pattern.search(link)]
+
+        if exclude:
+            pattern = re.compile(exclude)
+            links = [link for link in links if not pattern.search(link)]
+
+        return links
+    
+    def scrape_img_url(self):
+        img_tags = self.soup.find_all('img')
+        
+        # Extract the URLs from the <a> tags
+        imgs = []
+        for img_tag in img_tags:
+            img = img_tag.get('src')
+            
+            if img:
+                imgs.append(self.reformat_link(img))
+
+        return imgs
+
+    def get_headers(self):
+        response = requests.head(self.url)
+        return response.headers
+
+    def parse_page(self):
+        metadata = get_metadata(self.soup)
+
+        return {
+            "url": self.url,
+            "title": metadata["title"],
+            "breadcrums": metadata["breadcrums"],
+            "intro": metadata["intro"],
+            "date_verif": metadata["date_verif"],
+            "text": self.scrape_text(),
+            "images": self.scrape_img_url(),
+            "links": self.scrape_links()
+        }
+
+
 def parse_table(table):
     output = "\n\n"
     rows = table.find_all('tr')
@@ -148,89 +236,4 @@ def trim_bottom(text):
     return text.split("## Cette page vous a-t-elle été utile")[0]
 
 
-class ServicePublicScraper:
-    def __init__(self, response):
-        self.response = response
-        self.soup = BeautifulSoup(response.text, 'html.parser')
-        self.url = response.url
-
-    def reformat_link(self, link):
-        if link[0] == '/':
-            return self.url + link
-
-        if link.startswith("http"):
-            return link
-        
-        return 'http://' + link
-    
-
-    def scrape_text(self, trim=True):
-        output = ""
-
-        for tab_title, tab_content in get_tabs(self.soup):
-            output += f'{tab_title}'
-            for tab_text in parse_tabs(tab_content):
-                output += tab_text
-
-        if trim:
-            output = trim_bottom(output)
-
-        return output
-    
-
-    def scrape_links(self, include=None, exclude=None):
-        link_tags = self.soup.find_all('a')
-        
-        # Extract the URLs from the <a> tags
-        links = []
-        for link_tag in link_tags:
-            link = link_tag.get('href')
-            if link:
-                links.append(link)
-
-        links = list(filter(lambda x: '#' not in x, links))
-        links = list(set([self.reformat_link(l) for l in links]))
-
-        links = [link.split('?')[0] for link in links]
-
-        if include:
-            pattern = re.compile(include)
-            links = [link for link in links if pattern.search(link)]
-
-        if exclude:
-            pattern = re.compile(exclude)
-            links = [link for link in links if not pattern.search(link)]
-
-        return links
-    
-    def scrape_img_url(self):
-        img_tags = self.soup.find_all('img')
-        
-        # Extract the URLs from the <a> tags
-        imgs = []
-        for img_tag in img_tags:
-            img = img_tag.get('src')
-            
-            if img:
-                imgs.append(self.reformat_link(img))
-
-        return imgs
-
-    def get_headers(self):
-        response = requests.head(self.url)
-        return response.headers
-
-    def parse_page(self):
-        metadata = get_metadata(self.soup)
-
-        return {
-            "url": self.url,
-            "title": metadata["title"],
-            "breadcrums": metadata["breadcrums"],
-            "intro": metadata["intro"],
-            "date_verif": metadata["date_verif"],
-            "text": self.scrape_text(),
-            "images": self.scrape_img_url(),
-            "links": self.scrape_links()
-        }
     

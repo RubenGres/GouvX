@@ -10,10 +10,11 @@ import re
 import os
 from pathlib import Path
 
-from gouvx_scraper import BasicScraper
+from service_public_scraper import BasicScraper
 
 
 OUTPUT_DIR = "_scraped" # specify the path of the output dir here
+
 
 def get_path_from_url(url):
     """
@@ -44,7 +45,7 @@ def get_path_from_url(url):
     return file_path
 
 
-class MySpider(scrapy.Spider):
+class ServicePublicScraper(scrapy.Spider):
     name = 'service_public'
 
     start_urls = ["https://www.service-public.fr"]  # Replace with the initial URL you want to crawl

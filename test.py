@@ -1,7 +1,6 @@
-from gouvx_scraper import ServicePublicScraper
+from service_public_scraper import ServicePublicScraper
 import requests
 
-url = "https://www.service-public.fr/particuliers/vosdroits/F929"
 url = "https://www.service-public.fr/particuliers/vosdroits/F168"
 response = requests.get(url)
 scraper = ServicePublicScraper(response)

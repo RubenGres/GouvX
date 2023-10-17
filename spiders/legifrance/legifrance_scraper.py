@@ -4,7 +4,7 @@ import unicodedata
 
 from scrapy.http import Response
 
-class LegifranceScrapper(scrapy.Spider):
+class LegifranceScraper(scrapy.Spider):
     name = 'blogspider'
     start_urls = [
         "https://www.legifrance.gouv.fr/liste/code?etatTexte=VIGUEUR"
