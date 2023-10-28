@@ -14,8 +14,8 @@ def build_prompt(client, question, query_results):
 
   if query_results:
     for i, paragraph in enumerate(query_results, start=1):
-      title = result["title"]
-      url = result["url"]
+      title = paragraph["title"]
+      url = paragraph["url"]
       
       text += f"""
       Document [{i}]: {title}
