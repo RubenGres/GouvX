@@ -46,7 +46,7 @@ def ask():
     history = request.form['h']
     history = json.loads(history)
 
-    print("question", question)
+    print(request.remote_addr, question)
     try:
         prompt, query_results, chatgpt_generator = ask_gouvx(question, client=client, model=None, n_results=3, history=history)
     except ValueError:

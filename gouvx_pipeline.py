@@ -56,14 +56,15 @@ def ask_gouvx(question, client, model=None, n_results=1, history=None):
         model="text-embedding-ada-002"
     )
     custom_vector = response['data'][0]['embedding']
-    
     response = get_semantically_close_text(client, embedding=custom_vector)
     """
-    paragraph = get_semantically_close_text(client, text=question)
+
+    response = get_semantically_close_text(client, text=question)
+
 
     if response and response["data"]["Get"]["ServicePublic"] is not None:
-      query_results = response["data"]["Get"]["ServicePublic"][:n_results]
-    else:
+        query_results = response["data"]["Get"]["ServicePublic"][:n_results]
+    else :
       raise ValueError('The weaviate query returned no response')
 
     prompt = build_prompt(client, question, query_results)
