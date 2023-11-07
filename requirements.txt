@@ -1,5 +1,5 @@
 python-dotenv
-openai
+openai<1.0.0
 weaviate-client==3.22.1
 transformers
 sentence_transformers
