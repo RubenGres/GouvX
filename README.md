@@ -1,9 +1,17 @@
-# GouvX webui
+# Site gouvx.fr
 
-**Code source de l'interface web de [gouvx.fr](https://www.gouvx.fr/)**  
+Code de l'interface web de [gouvx.fr](https://www.gouvx.fr/)
 
-GouvX est une initiative citoyenne indépendante et apartisanne, son code source complet accessible librement sur Github.
+## Déploiement
 
-> GouvX _(Gouvernement eXplicable)_ est un assistant qui facilite l'accès à l'information des sites gouvernementaux français.  Son objectif principal est de favoriser une meilleure compréhension des sujets traités par le gouvernement, d'encourager la réflexion citoyenne et de faciliter l'accès à l'information.  En mettant en œuvre des modèles de langage avancés, GouvX aspire également à démontrer l'utilité démocratique de ces technologies émergentes.
+Le branche main est automatiquement déployée sur [gouvx.fr](https://www.gouvx.fr/) avec GitHub pages
 
-L'interface web est une page statique html/css/js basée sur bootstrap. Le choix d'une page statique est assumé et permet de profiter de l'hébergement Github pages.
+## Détails d'implémentation
+
+L'interface web est une page statique html/css/js basée sur bootstrap. L'url de l'API est spécifié en début de fichier dans chatbot.js
+
+Le premier message envoyé par l'utilisateur provoquera systématiquement une recherche dans la base de données. Le premier message reçu de l'API est systématiquement un json contenant la liste des sources, si il n'y a pas de sources le json sera vide. Ensuite un flux de token est envoyé correspondant à la réponse de l'assistant.
+
+L'historique de conversation doit être passé en paramètre en respectant la convention de nommage de openai (assistant, user)
+
+Pour l'instant il n'y a pas de limite sur la taille des conversation, mais il y a une limite à ma carte de crédit

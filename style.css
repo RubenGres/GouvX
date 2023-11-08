@@ -1,183 +1,215 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.loading {
-  border: 4px solid #eeeeee;
-  border-top: 4px solid hsl(120, 100%, 30%);
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 2s linear infinite;
-  visibility: hidden;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
+  /* Set the body and html to height 100% to allow our container to be full height */
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
   }
-  100% {
-    transform: rotate(360deg);
+
+  /* loading animation */
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
-}
-
-@font-face {
-  font-family: marriane;
-  src: url(fonts/Marianne-Bold.woff);
-  font-weight: bold;
-}
-
-.gouvx-logo {
-  font-family: marriane;
-  text-transform: uppercase;
-  text-align: center;
-  font-size: 3em;
-  color: #002654;
-}
-
-.gouvx-logo red{
-    color: #ED2939;
-}
-
-.gouvx-logo blue{
-  color: #0000ff;
-}
-
-.loading.display {
+  
+  .loading {
+    border: 4px solid #eeeeee;
+    border-top: 4px solid hsl(120, 100%, 30%);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+    visibility: hidden;
+  }
+  
+  .loading.display {
     visibility: visible;
-}
+  }
+  
 
-.maindiv {
-  height: 80%;
-}
+  /* Set our container to display flex which will help in alignment */
+  .full-screen-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
 
-.chat-container {
-  height: 100%;
-  padding: 20px;
-  border: 1px solid #eeeeee;
-  background-color: rgb(245, 245, 245);
-  border-radius: 5px;
-  padding-bottom: 70px;
-}
+  /* Header and footer */
+  header, footer {
+    text-align: center;
+  }
 
-.author-footer {
-  text-align: center;
-  margin-top: 30px;
-}
+  header {
+    border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+    padding-bottom: 10px;
+  }
 
-.chat-box {
-  display: flex;
-  flex-direction: column-reverse;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-  height: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
-}
+  footer {
+    border-top: solid 1px rgba(0, 0, 0, 0.2);
+    font-size: 0.8em;
+    height: 2em;
+  }
 
-.message-box.bot {
-  align-self: flex-start;
-}
+  /* info box */
+  .info-box {
+    text-align: center;
+    width: 100%;
+    font-size: 0.8em;
+  }
 
-.message-box.user {
-  align-self: flex-end;
-}
+  /* main content */
+  .content {
+    flex: 1; /* Flex value 1 will make it take the available space between header and footer */
+    overflow-y: auto; /* Adds scroll to the content div if content overflows */
+    padding: 10px;
+  }
 
-.message-box .bot {
-  display: flex;
-  margin-bottom: 10px;
-}
+  .chat-container {
+    height: 100%;
+    padding: 20px;
+    border: 1px solid #eeeeee;
+    background-color: rgb(245, 245, 245);
+    border-radius: 5px;
+    padding-bottom: 70px;
+  }
 
-.message-box .user {
-  display: flex;
-  margin-bottom: 10px;
-}
+  /* chat box */
+  .chat-box {
+    display: flex;
+    flex-direction: column-reverse;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+  
+  /* messages */
+  .message-box .bot,.user {
+    display: flex;
+    margin-bottom: 10px;
+  }
 
-.message-box .sources {
-  font-size: 13px;
-  margin-left: 40px;
-}
+  .message-box.bot {
+    align-self: flex-start;
+  }
+  
+  .message-box.user {
+    align-self: flex-end;
+  }
+  
+  .message-box .sources {
+    font-size: 0.7em;
+    margin-left: 40px;
+  }
+  
+  /* profile pictures */
+  .profile-pic {
+    margin-top: 10px;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    border-radius: 100%;
+  }
+  
+  .bot .profile-pic {
+    background-image: url('favicon.png');
+    background-size: cover;
+    margin-right: 10px;
+  }
+  
+  .user .profile-pic {
+    background-color: #5c9ee4; /* change color as needed */
+    background-size: cover;
+    margin-left: 10px;
+  }
+  
+  .message {
+    padding: 10px;
+    border: 1px solid hsl(0, 0%, 80%);
+    border-radius: 5px;
+    overflow-wrap: break-word;
+  }
+  
+  .bot .message {
+    background-color: hsl(120, 100%, 95%);
+  }
+  
+  .user .message {
+    background-color: hsl(192, 91%, 95%);
+  }
+  
 
-.profile-pic {
-  margin-top: 10px;
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
-  min-height: 30px;
-  border-radius: 50%;
-}
+  /* inputs */
+  .input-group {
+    width: 100%;
+    position: relative;
+  }
+  
+  .input-group input {
+    height: auto;
+  }
+  
+  .input-group-append button {
+    background-color: #ffffff;
+  }
 
-.bot .profile-pic {
-  background-image: url('favicon.png');
-  background-size: cover;
-  margin-right: 10px;
-}
+  .input-group-append button {
+    background-color: #ffffff;
+    border: 0;
+  }
 
-.user .profile-pic {
-  background-color: #246cb8; /* change color as needed */
-  background-size: cover;
-  margin-left: 10px;
-}
+  .input-group-append button:hover {
+    background-color: #ffffff;
+  }
 
-.message {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  overflow-wrap: break-word;
-}
+  .main_arrow {
+    fill: rgb(171, 171, 171);
+  }
 
-.bot .message {
-  background-color: #d6ffd6;
-}
+  .main_arrow:hover {
+    fill: rgb(133, 133, 133);
+  }
 
-.user .message {
-  background-color: #bceffc;
-}
+  #send-btn {
+    position: absolute;
+    height: 2.29em;
+    width: 2em;
+    right: 0;
+    bottom: 1px;
+    padding: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
 
-.input-group {
-  width: 100%;
-  position: relative;
-}
+  /* logo */
+  .gouvx-logo {
+    font-family: marriane;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 2.5em;
+    color: #002654;
+  }
+  
+  .gouvx-logo red{
+      color: #ED2939;
+  }
+  
+  .gouvx-logo blue{
+    color: #0000ff;
+  }
 
-.input-group input {
-  height: auto;
-}
-
-#user-input {
-  resize: none;
-  overflow-y: scroll;
-  height: 45px;
-  padding-right: 40px;
-}
-
-#send-btn {
-  position: absolute;
-  height: 35px;
-  width: 35px;
-  right: 5px;
-  bottom: 5px;
-  padding: 3px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-.alert-info {
-  text-align: center;
-}
-
-.modal-backdrop {
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.6
-  ); /* Adjust the alpha value to control darkness */
-}
+  @font-face {
+    font-family: marriane;
+    src: url(fonts/Marianne-Bold.woff);
+    font-weight: bold;
+  }
