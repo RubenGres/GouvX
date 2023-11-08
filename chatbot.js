@@ -1,5 +1,7 @@
 chat_history = []
 
+const url = 'https://gouvx-api-g26csh5qkq-ew.a.run.app/ask/';
+
 document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
@@ -44,8 +46,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
 
-            chatBox.appendChild(userMessage);
-            chatBox.innerHTML += botMessage;
+            chatBox.prepend(userMessage);
+            chatBox.innerHTML = botMessage + chatBox.innerHTML;
 
             userInput.value = "";
             userInput.style.height = "45px";
@@ -71,15 +73,20 @@ function adjustRows(textarea) {
 function parse_response_metadata(metadata, message_number) {
     [metada_json, other_text] = metadata.split("\n")
 
-    if (metada_json == null){
+    if (metada_json == "{}"){
         return other_text
     }
 
+    
+    let lastbotsources = document.getElementById("botsources" + message_number);
+    
     const jsonData = JSON.parse(metada_json);
 
-    let lastbotsources = document.getElementById("botsources" + message_number);
+    const uniqueItems = jsonData.filter((item, index, self) =>
+        index === self.findIndex((t) => t.url === item.url)
+    );
 
-    const result = jsonData.map((item, index) => {
+    const result = uniqueItems.map((item, index) => {
         const { title, url } = item;
         return `<a href="${url}" target="_blank">[${index + 1}] ${title}</a>`;
     });
@@ -93,7 +100,6 @@ function parse_response_metadata(metadata, message_number) {
 
 
 function ask_gouvx(question, message_number) {
-    const url = 'https://gouvx-api-g26csh5qkq-ew.a.run.app/ask/';
     const postData = new URLSearchParams({
         q: question,
         h: JSON.stringify(chat_history)
@@ -120,6 +126,7 @@ function ask_gouvx(question, message_number) {
 
                     const { done, value } = await reader.read();
                     let metadata = textDecoder.decode(value, { stream: true });
+
                     remaining_reply = parse_response_metadata(metadata, message_number)
 
                     //TODO make this a function
@@ -153,7 +160,7 @@ function ask_gouvx(question, message_number) {
                     })
         
                     chat_history.push({
-                        "role": "system",
+                        "role": "assistant",
                         "content": system_reply
                     })
                 }
