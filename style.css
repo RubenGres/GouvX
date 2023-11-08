@@ -1,3 +1,9 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .loading {
   border: 4px solid #eeeeee;
   border-top: 4px solid hsl(120, 100%, 30%);
@@ -17,32 +23,61 @@
   }
 }
 
+@font-face {
+  font-family: marriane;
+  src: url(fonts/Marianne-Bold.woff);
+  font-weight: bold;
+}
+
+.gouvx-logo {
+  font-family: marriane;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 3em;
+  color: #002654;
+}
+
+.gouvx-logo red{
+    color: #ED2939;
+}
+
+.gouvx-logo blue{
+  color: #0000ff;
+}
+
 .loading.display {
     visibility: visible;
 }
 
+.maindiv {
+  height: 80%;
+}
+
 .chat-container {
-  margin: auto;
-  max-width: 800px;
+  height: 100%;
   padding: 20px;
   border: 1px solid #eeeeee;
   background-color: rgb(245, 245, 245);
   border-radius: 5px;
+  padding-bottom: 70px;
 }
 
 .author-footer {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .chat-box {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .message-box.bot {
@@ -106,7 +141,6 @@
 
 .input-group {
   width: 100%;
-  max-height: 1000px;
   position: relative;
 }
 
@@ -119,7 +153,6 @@
   overflow-y: scroll;
   height: 45px;
   padding-right: 40px;
-  max-height: 400px;
 }
 
 #send-btn {
