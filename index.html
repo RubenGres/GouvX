@@ -11,7 +11,11 @@
 </head>
 
 <body>
-    <div class="container mt-5">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <div class="gouvx-logo">gouv<red>x</red></div>
+
+    <div class="maindiv container mt-3">
 
         <div class="alert alert-info" role="alert">
             <b>GouvX</b> s'appuie sur <a href="https://www.service-public.fr">service-public.fr</a> pour vous aider dans
@@ -20,22 +24,12 @@
         </div>
 
         <div class="chat-container">
-
             <div class="chat-box" id="chat-box">
 
-                <div class="message-box bot">
-                    <div class="bot">
-                        <div class="profile-pic"></div>
-                        <div class="message">
-                            Bonjour! Comment est ce que je peux vous aider aujourd'hui ?
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="input-group">
-                <textarea class="form-control" placeholder="Écrit un message..." id="user-input" rows="1"
-                    oninput="adjustRows(this)"></textarea>
+                <input class="form-control" placeholder="Envoyer un message" id="user-input"></input>
                 <div class="input-group-append">
                     <button class="btn btn-primary" type="button" id="send-btn">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="send-icon">
@@ -47,6 +41,7 @@
             </div>
 
         </div>
+        
         <div class="author-footer">
             Créé par <a href="https://rubengr.es">Ruben Gres</a> | <a href="https://github.com/gouvx"
                 target="_blank">GitHub</a>
@@ -57,23 +52,19 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="overlayModalLabel">C'est quoi GouvX ?</h5>
+                    <h5 class="modal-title" id="overlayModalLabel">Qu'est ce que gouvX ?</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <b> GouvX </b> (<b>Gouv</b>ernement e<b>X</b>plicable) est un assistant textuel virtuel qui
-                    centralise et facilite l'accés à l'information des sites gouvernementaux français.
+                    <b> GouvX </b> est un assistant virtuel qui facilite l'accés à l'information des sites gouvernementaux français.
 
                     <br><br>
                     
-                    Actuellement GouvX se base seulement sur <a
+                    Actuellement il se base seulement sur <a
                     href="https://www.service-public.fr">service-public.fr</a>
                     mais dans le futur il serait étendu à code.travail.gouv.fr, legifrance.gouv.fr, vie-publique.fr, etc.
-
-                    <br><br>
-
                     L'objectif est de favoriser une meilleure compréhension des sujets traités par le
-                    gouvernement, d'encourager la réflexion citoyenne et de faciliter l'accès à l'information.
+                    gouvernement, d'encourager la réflexion citoyenne et de simplifier les démarchesadministratives.
                     <br><br>
                     En mettant en œuvre des modèles de langage avancés (LLM), le projet aspire également à démontrer
                     l'utilité démocratique de ces technologies émergentes. L'entièreté du code source est accessible librement sur <a
@@ -88,7 +79,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="chatbot.js"></script>
 
 </body>
