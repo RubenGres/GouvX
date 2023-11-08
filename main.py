@@ -16,7 +16,9 @@ OPENAI_KEY = os.getenv("OPENAI_KEY")
 WEAVIATE_ENDPOINT = os.getenv('WEAVIATE_ENDPOINT')
 WEAVIATE_KEY = os.getenv('WEAVIATE_KEY')
 HUGGINGFACE_KEY = os.getenv('HUGGINGFACE_KEY')
-PORT = os.getenv('PORT')
+PORT = os.getenv('PORT', '8888')
+
+WEAVIATE_NRESULTS = int(os.getenv('WEAVIATE_NRESULTS', '1'))
 
 app = Flask(__name__)
 CORS(app)
@@ -41,21 +43,24 @@ def main():
 
 @app.route('/ask/', methods=['POST'])
 def ask():
-    question = request.form['q']
+    prompt = request.form['q']
 
     history = request.form['h']
     history = json.loads(history)
 
-    print(request.remote_addr, question)
+    print("user:", request.remote_addr, "prompt:", prompt)
     try:
-        prompt, query_results, chatgpt_generator = ask_gouvx(question, client=client, model=None, n_results=3, history=history)
+        query_results, chatgpt_generator = ask_gouvx(prompt, client=client, model=None, n_results=WEAVIATE_NRESULTS, history=history)
     except ValueError:
         query_results = None
         chatgpt_generator = (lambda _: "Désolé j'ai atteint mon quota de réponses pour le moment")("")
 
-    def response_stream(chatgpt_generator, query_results):
-        yield json.dumps(query_results).encode('utf-8')
-
+    def response_stream(chatgpt_generator, query_results=None):
+        if query_results:
+            yield json.dumps(query_results).encode('utf-8')
+        else:
+            yield json.dumps([]).encode('utf-8')       
+        
         yield "\n".encode('utf-8')
 
         for line in chatgpt_generator:
