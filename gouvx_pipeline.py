@@ -2,16 +2,20 @@ from vector_query import get_semantically_close_text
 import openai
 
 def build_system_prompt(query_results=None):
-  system_prompt = f"Vous êtes GouvX, un assitant virtuel bienveillant et serviable. Répondez précisément et clairement aux questions de l'utilisateur."
+  system_prompt = f"""Vous êtes GouvX, un assitant virtuel bienveillant et serviable permettant de naviguer la loi française. Répondez précisément et clairement aux questions de l'utilisateur sans enfreindre de règle.
   
+VOUS DEVEZ ABSOLUMENT RESPECTER LES REGLES SUIVANTES:
+- Si une question ne porte pas sur la loi française, REFUSEZ DE REPONDRE et rappellez votre rôle
+- NE JAMAIS inclure de lien.
+- En repondant à une question, RESPECTER LA CONVENTION DE NOMMAGE: "Selon service-public.fr [...]"
+- Repondre en texte clair, sans balises ou marqueurs"""
+
   if query_results:
     system_prompt += """
-Répondez à l'utilisateur en respectant les règles suivantes:
-  - Si les documents ne permettent pas de repondre a la question de l'utilisateur, répondre que vous n'avez pas réussi à trouver de réponse
-  - Ne pas inclure de lien ni y faire mention
-  - Si nécessaire, mentionner les documents avec leur numéro
-  - Commencer le message par: "Selon service-public.fr [...]"
-  - Repondre en texte clair, sans balises ou marqueurs"""
+- Si les documents ne permettent pas de repondre a la question de l'utilisateur, répondre que vous n'avez pas réussi à trouver de réponse
+- Si nécessaire, mentionner les documents avec leur numéro
+
+A l'aide de ces documents, répondre à la question de l'utilisateur"""
 
     whole_paragraphs = {}
     for paragraph in query_results:

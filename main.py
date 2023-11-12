@@ -49,7 +49,10 @@ def ask():
     history = json.loads(history)
 
     print("user:", request.remote_addr, "prompt:", prompt)
+
     try:
+        if len(history) > 10:
+            raise ValueError("conversation too long")
         query_results, chatgpt_generator = ask_gouvx(prompt, client=client, model=None, n_results=WEAVIATE_NRESULTS, history=history)
     except ValueError:
         query_results = None
