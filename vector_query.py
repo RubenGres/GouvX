@@ -1,7 +1,7 @@
 def get_semantically_close_text(client, text=None, embedding=None):
     query = (
        client.query
-      .get("ServicePublic", ["text", "url", "subdomain", "title"])
+      .get("ServicePublic", ["text", "url", "title"])
     )
 
     if embedding:
@@ -19,6 +19,8 @@ def get_semantically_close_text(client, text=None, embedding=None):
     )
 
     response = query.do()
+
+    print(response)
 
     if 'errors' in response["data"]["Get"].keys() and response["data"]["Get"]['errors'] is not None:
        raise RuntimeError('There is some error in weaviate for this query')
