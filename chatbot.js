@@ -1,6 +1,6 @@
 chat_history = []
 
-const url = 'https://gouvx-api-g26csh5qkq-ew.a.run.app/ask/';
+const url = 'http://localhost:8888/ask/';
 
 document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+
 function adjustRows(textarea) {
     textarea.style.height = "45px";
     textarea.style.height = (25 + textarea.scrollHeight) + "px"
@@ -72,30 +73,30 @@ function adjustRows(textarea) {
 
 function parse_response_metadata(metadata, message_number) {
     [metada_json, other_text] = metadata.split("\n")
-
-    if (metada_json == "{}"){
+    
+    try {
+        let lastbotsources = document.getElementById("botsources" + message_number);
+    
+        const jsonData = JSON.parse(metada_json)['data']['Get']['ServicePublic']
+        console.log(jsonData)
+    
+        const uniqueItems = jsonData.filter((item, index, self) =>
+            index === self.findIndex((t) => t.url === item.url)
+        );
+    
+        console.log(uniqueItems)
+    
+        const result = uniqueItems.map((item, index) => {
+            const { title, url } = item;
+            return `<a href="${url}" target="_blank">[${index + 1}] ${title}</a>`;
+        });
+    
+        sources = result.join('<br>');
+    
+        lastbotsources.innerHTML = sources
+    } finally  {
         return other_text
     }
-
-    
-    let lastbotsources = document.getElementById("botsources" + message_number);
-    
-    const jsonData = JSON.parse(metada_json);
-
-    const uniqueItems = jsonData.filter((item, index, self) =>
-        index === self.findIndex((t) => t.url === item.url)
-    );
-
-    const result = uniqueItems.map((item, index) => {
-        const { title, url } = item;
-        return `<a href="${url}" target="_blank">[${index + 1}] ${title}</a>`;
-    });
-
-    sources = result.join('<br>');
-
-    lastbotsources.innerHTML = sources
-
-    return other_text
 }
 
 
