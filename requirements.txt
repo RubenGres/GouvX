@@ -1,6 +1,6 @@
 python-dotenv
 openai<1.0.0
-weaviate-client==3.22.1
+weaviate-client
 transformers
 sentence_transformers
 gunicorn==20.1.0

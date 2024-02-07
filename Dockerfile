@@ -12,4 +12,4 @@ ENV PORT 8080
 
 EXPOSE $PORT
 
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 flask_api:app
