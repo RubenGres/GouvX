@@ -6,7 +6,7 @@ history = []
 while True:
     user_prompt = input("user: ")
     print("GouvX: ", end="")
-    gouvx_reply = gouvx_agent.query(user_prompt, history=history)
+    gouvx_reply = gouvx_agent.query(user_prompt, history=history, verbose=False)
 
     reply_str = ""
     for token in gouvx_reply:
