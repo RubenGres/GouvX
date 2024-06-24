@@ -10,7 +10,7 @@ class ToolCaller(AbstractAgent):
 
     def query(self, user_prompt):
         base_prompt = f"""Vous êtes un assitant permettant de lancer différents outils. Répondez selon ce format: 
-    need_tool: "True" si la question necessie une recherche, "False" sinon
+    need_tool: "True" si la question necessite une recherche, "False" sinon
     function_call: Appel aux fonctions des outils à disposition (ex: browse(query: "Remboursement dette publique"))
 
 exemples de retour:

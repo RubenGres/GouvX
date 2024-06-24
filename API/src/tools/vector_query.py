@@ -1,19 +1,14 @@
 import re
 from .abstract_tool import LLMTool
-import weaviate
+from pinecone import Pinecone, ServerlessSpec
+
 
 class VectorQuery(LLMTool):
-    """Vector query tool using weaviate vector DB"""
+    """Vector query tool using vector DB"""
 
-    def __init__(self, weaviate_endpoint=None, weaviate_key=None, huggingface_key=None, n_results=3):
-        if weaviate_endpoint and weaviate_key and huggingface_key:
-            self.client = weaviate.Client(
-                url = weaviate_endpoint,
-                auth_client_secret=weaviate.AuthApiKey(api_key=weaviate_key),
-                additional_headers={
-                    'X-HuggingFace-Api-Key': huggingface_key
-                }
-            )
+    def __init__(self, pinecone_key=None, n_results=3):
+        if pinecone_key:
+            self.client = Pinecone(api_key=pinecone_key)
 
         self.n_results=n_results
         self.last_query_results = None
@@ -49,67 +44,56 @@ A chaque question, demandez vous: est ce que cette question est à propos de la 
         
         return ""
 
+
     def apply(self, args):
         query = args['query']
 
-        response = query_db(self.client, text=query, n_results=self.n_results)
+        response = self.query_db(text=query, n_results=self.n_results)
         self.last_query_results = response
 
-        return parse_weaviate_response(response)
+        system_prompt = """
+
+        A l'aide de ces documents, répondre à la question de l'utilisateur:
+        - Si les documents ne permettent pas de repondre a la question de l'utilisateur, répondre que vous n'avez pas réussi à trouver de réponse
+        - Si nécessaire, mentionner les documents par leur numéro
+
+        Documents:
+        """
+
+        whole_paragraphs = {}
+        for match in response["matches"]:
+            title = match["metadata"]["url"]
+            content = match["metadata"].get("text", "")
+            
+            # Check if the title already exists, append the content if it does.
+            if title in whole_paragraphs:
+                whole_paragraphs[title] += "\n" + content
+            else:
+                whole_paragraphs[title] = content
+
+        for i, (title, paragraph) in enumerate(whole_paragraphs.items(), start=1):
+            system_prompt += f"\n\nDocument [{i}]: {title}\n{paragraph}"
+
+        return system_prompt
 
 
-def query_db(client, text=None, embedding=None, n_results=3):
-    query = (
-       client.query
-      .get("ServicePublic", ["text", "url", "title"])
-    )
+    def query_db(self, text=None, embedding=None, n_results=3):
+        index = self.client.Index("gouvx")
 
-    if embedding:
-        nearVector = {"vector": embedding}
-        query = query.with_near_vector(nearVector)
-    elif text:
-       query = query.with_near_text({"concepts": [text]})
-    else:
-      raise ValueError('please provide ethier text or embedding')
+        if text and embedding:
+            raise ValueError('please provide only one of text or embedding')
 
-    query = (
-        query
-        .with_limit(n_results)
-        .with_additional(['certainty'])
-    )
-
-    response = query.do()
-
-    if 'errors' in response["data"]["Get"].keys() and response["data"]["Get"]['errors'] is not None:
-       raise RuntimeError('Weaviate error:', response["data"]["Get"]['errors'])    
-
-    if not response or response["data"]["Get"]["ServicePublic"] is None:
-        raise ValueError('The weaviate query returned no response')
-
-    return response
+        if text:
+            embedding = [0]*1024 #TODO change this with a call to runpod serverless
 
 
-def parse_weaviate_response(response):
-    system_prompt = """
+        results = index.query(
+            namespace="servicepublic", # at the moment ontly servicepublic
+            vector=embedding,
+            top_k=n_results,
+            include_metadata=True
+        )
 
-A l'aide de ces documents, répondre à la question de l'utilisateur:
-- Si les documents ne permettent pas de repondre a la question de l'utilisateur, répondre que vous n'avez pas réussi à trouver de réponse
-- Si nécessaire, mentionner les documents par leur numéro
-
-Documents:
-"""
-    whole_paragraphs = {}
-    for paragraph in response["data"]["Get"]["ServicePublic"]:
-        title = paragraph["title"]
-        content = paragraph.get("text", "")
         
-        # Check if the title already exists, append the content if it does.
-        if title in whole_paragraphs:
-            whole_paragraphs[title] += "\n" + content
-        else:
-            whole_paragraphs[title] = content
 
-    for i, (title, paragraph) in enumerate(whole_paragraphs.items(), start=1):
-        system_prompt += f"\n\nDocument [{i}]: {title}\n{paragraph}"
-
-    return system_prompt
+        return results
