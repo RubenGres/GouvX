@@ -8,14 +8,11 @@ from ..tools.vector_query import VectorQuery
 
 class GouvX(AbstractAgent):
     def __init__(self):
-        self.OPENAI_KEY = os.getenv("OPENAI_KEY")
-        self.WEAVIATE_ENDPOINT = os.getenv('WEAVIATE_ENDPOINT')
-        self.WEAVIATE_KEY = os.getenv('WEAVIATE_KEY')
-        self.HUGGINGFACE_KEY = os.getenv('HUGGINGFACE_KEY')
-        self.WEAVIATE_NRESULTS = int(os.getenv('WEAVIATE_NRESULTS', '1'))
+        self.PINECONE_KEY = os.getenv('PINECONE_KEY')
+        self.RAG_NRESULTS = int(os.getenv('RAG_NRESULTS', '3'))
         self.last_query_results = None
 
-    def query(self, user_prompt, history=None):
+    def query(self, user_prompt, history=None, verbose=False):
         base_prompt = f"""Vous êtes GouvX, un assitant virtuel bienveillant et serviable permettant de naviguer les services du service public et répondre au question portant sur le droit civil, public ou privé.
 Répondez précisément et clairement aux questions de l'utilisateur en respectant les règles suivantes:
 - Ne JAMAIS inclure de lien
@@ -25,6 +22,10 @@ Répondez précisément et clairement aux questions de l'utilisateur en respecta
 
         # call the tool caller agent to make a decision
         agent_answer = ToolCaller().query(user_prompt)
+
+        if verbose:
+            print("tool_caller:\n", agent_answer)
+        
         pattern = r"need_tool: (\w+)\s*function_call: (.*)"
         match = re.match(pattern, agent_answer)
         
@@ -37,16 +38,22 @@ Répondez précisément et clairement aux questions de l'utilisateur en respecta
 
             if need_tool:
                 # query the vector database
-                query_tool = VectorQuery(weaviate_key=self.WEAVIATE_KEY, weaviate_endpoint=self.WEAVIATE_ENDPOINT, huggingface_key=self.HUGGINGFACE_KEY, n_results=self.WEAVIATE_NRESULTS)
+                query_tool = VectorQuery(pinecone_key=self.PINECONE_KEY, n_results=self.RAG_NRESULTS)
                 formatted_response = query_tool.trigger(function_call)
                 self.last_query_results = query_tool.last_query_results
         
         system_prompt = SystemPromptBuilder(base_prompt).build_system_prompt()
         system_prompt += formatted_response
 
+        if verbose:
+            print("system_prompt:\n", system_prompt)
+
         reply = query_llm(user_prompt=user_prompt,
                           system_prompt=system_prompt,
                           history=history,
                           model="gpt-3.5-turbo-16k")
+
+        if verbose:
+            print("agent_answer:\n", agent_answer)
 
         return reply
