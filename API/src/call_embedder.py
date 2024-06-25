@@ -1,7 +1,8 @@
+from typing import List
 import requests
 import os
 
-def embed_text(text: list[str]) -> list[list]:
+def embed_text(text: List[str]) -> List[List[float]]:
     RUNPOD_ENDPOINT_ID = os.environ["RUNPOD_ENDPOINT_ID"]
     RUNPOD_API_KEY = os.environ["RUNPOD_API_KEY"]
 
