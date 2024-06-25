@@ -7,11 +7,12 @@ from pinecone import Pinecone, ServerlessSpec
 class VectorQuery(LLMTool):
     """Vector query tool using vector DB"""
 
-    def __init__(self, pinecone_key=None, n_results=3):
+    def __init__(self, pinecone_key=None, n_results=3, sources=None):
         if pinecone_key:
             self.client = Pinecone(api_key=pinecone_key)
 
         self.n_results=n_results
+        self.sources = sources
         self.last_query_results = None
 
     def get_system_prompt(self):
@@ -49,7 +50,7 @@ A chaque question, demandez vous: est ce que cette question est à propos de la 
     def apply(self, args):
         query = args['query']
 
-        response = self.query_db(text=query, n_results=self.n_results)
+        response = self.query_db(text=query, n_results=self.n_results, sources=self.sources)
         self.last_query_results = response
 
         system_prompt = """
@@ -78,7 +79,7 @@ A chaque question, demandez vous: est ce que cette question est à propos de la 
         return system_prompt
 
 
-    def query_db(self, text=None, embedding=None, n_results=3):
+    def query_db(self, text=None, embedding=None, n_results=3, sources=None):
         index = self.client.Index("gouvx")
 
         if text and embedding:
@@ -87,23 +88,31 @@ A chaque question, demandez vous: est ce que cette question est à propos de la 
         if text:
             embedding = embed_text(text)[0]
 
-        results = index.query(
-            namespace="servicepublic", # at the moment ontly servicepublic
-            vector=embedding,
-            top_k=n_results,
-            include_metadata=True
-        )
+        results = {}
+        for source in sources:
+            partial_result = index.query(
+                namespace=source,
+                vector=embedding,
+                top_k=n_results,
+                include_metadata=True
+            )
+
+            results[source] = partial_result
 
         formatted_results = []
-        for match in results["matches"]:
-            title = match["metadata"]["title"]
-            url = match["metadata"]["url"]
-            content = match["metadata"].get("text", "")
+        for source, partial_result in results.items():
+            for match in partial_result["matches"]:
+                title = match["metadata"]["title"]
+                url = match["metadata"]["url"]
+                content = match["metadata"].get("text", "")
 
-            formatted_results.append({
-                "title": title,
-                "url": url,
-                "content": content
-            })
+                formatted_results.append({                    
+                    "title": title,
+                    "url": url,
+                    "source": source,
+                    "content": content
+                })
+
+        #TODO rerank results by score or using runpod infinity api
 
         return formatted_results

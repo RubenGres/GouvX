@@ -7,7 +7,8 @@ from ..agents.tool_caller import ToolCaller
 from ..tools.vector_query import VectorQuery
 
 class GouvX(AbstractAgent):
-    def __init__(self):
+    def __init__(self, sources):
+        self.sources = sources
         self.PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
         self.RAG_NRESULTS = int(os.getenv('RAG_NRESULTS', '3'))
         self.last_query_results = None
@@ -38,7 +39,7 @@ Répondez précisément et clairement aux questions de l'utilisateur en respecta
 
             if need_tool:
                 # query the vector database
-                query_tool = VectorQuery(pinecone_key=self.PINECONE_API_KEY, n_results=self.RAG_NRESULTS)
+                query_tool = VectorQuery(pinecone_key=self.PINECONE_API_KEY, n_results=self.RAG_NRESULTS, sources=self.sources)
                 formatted_response = query_tool.trigger(function_call)
                 self.last_query_results = query_tool.last_query_results
         

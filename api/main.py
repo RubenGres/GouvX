@@ -10,15 +10,18 @@ CORS(app)
 
 @app.route('/', methods=['GET'])
 def main():
-    return "GouvX API is listening on route /ask"
+    return "GouvX api is listening on route /ask"
 
 @app.route('/ask/', methods=['POST'])
 def ask():
-    user_prompt = request.form['q']
-    history = request.form['h']
-    history = json.loads(history)
+    user_prompt = request.form['question']
+    sources = request.form['sources']
+    sources = sources.split(",")
+    
+    history = request.form['history']
+    history = json.loads(history)    
 
-    gouvx_agent = GouvX()
+    gouvx_agent = GouvX(sources)
 
     try:
         if len(history) > 10:
