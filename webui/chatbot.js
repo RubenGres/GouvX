@@ -1,6 +1,7 @@
 chat_history = []
 
-const url = 'https://gouvx-api-g26csh5qkq-ew.a.run.app/ask/';
+//const url = 'https://gouvx-api-h7ruetg7ga-uc.a.run.app';
+const gouvx_api_url = 'https://ominous-cod-777qq6x9q67cr7xx-8080.app.github.dev'
 
 document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
@@ -64,10 +65,55 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+
+function set_browser_page(url) {
+    // Check if the user is on a mobile device
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+        return;
+    }
+
+    const browserElement = document.getElementById('browser');
+    
+    browserElement.offsetHeight;
+    browserElement.classList.add('visible');
+
+    // Set iframe source to the first URL in uniqueItems
+    const iframeElement = browserElement.querySelector('iframe');
+
+    //clear the iframe before changing src
+    iframeElement.src = '';
+    iframeElement.src = gouvx_api_url + `/proxy?url=${encodeURIComponent(url)}`;
+}
+
+function close_browser() {
+    const browserElement = document.getElementById('browser');
+    browserElement.classList.remove('visible');
+}
+
+function highlight_browser() {
+    const browserElement = document.getElementById('browser');
+    browserElement.style.position = 'relative';
+
+    const overlay = document.createElement('div');
+    overlay.className = 'highlight-overlay';
+    browserElement.appendChild(overlay);
+}
+
+// Remove highlight
+function unhighlight_browser() {
+    const browserElement = document.getElementById('browser');
+
+    const overlay = browserElement.querySelector('.highlight-overlay');
+    if (overlay) {
+        browserElement.removeChild(overlay);
+    }
+}
+
+
 function parse_response_metadata(metadata, message_number) {
     [metada_json, other_text] = metadata.split("\n")
 
-    if (metada_json == "{}"){
+    if (metada_json == "[]" || metada_json == "[null]"){
         return other_text
     }
     
@@ -81,13 +127,21 @@ function parse_response_metadata(metadata, message_number) {
 
     const result = uniqueItems.map((item, index) => {
         const { title, url } = item;
-        return `<a href="${url}" target="_blank">[${index + 1}] ${title}</a>`;
+        return `<span onmouseout="unhighlight_browser()" onmouseenter="highlight_browser()" onclick="set_browser_page('${url}')"><b>[${index + 1}]</b> ${title}</span>
+        
+        <a href="${url}" target="_blank class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15" viewBox="0 0 30 30">
+            <path d="M 25.980469 2.9902344 A 1.0001 1.0001 0 0 0 25.869141 3 L 20 3 A 1.0001 1.0001 0 1 0 20 5 L 23.585938 5 L 13.292969 15.292969 A 1.0001 1.0001 0 1 0 14.707031 16.707031 L 25 6.4140625 L 25 10 A 1.0001 1.0001 0 1 0 27 10 L 27 4.1269531 A 1.0001 1.0001 0 0 0 25.980469 2.9902344 z M 6 7 C 4.9069372 7 4 7.9069372 4 9 L 4 24 C 4 25.093063 4.9069372 26 6 26 L 21 26 C 22.093063 26 23 25.093063 23 24 L 23 14 L 23 11.421875 L 21 13.421875 L 21 16 L 21 24 L 6 24 L 6 9 L 14 9 L 16 9 L 16.578125 9 L 18.578125 7 L 16 7 L 14 7 L 6 7 z"></path>
+            </svg>
+        </a>
+        `;
     });
 
     sources = result.join('<br>');
-
     lastbotsources.innerHTML = sources
-
+    
+    set_browser_page(uniqueItems[0].url);
+    
     return other_text
 }
 
@@ -112,7 +166,7 @@ function ask_gouvx(question, message_number) {
     const loader = document.querySelector('.loading')
     loader.classList.add('display')
 
-    fetch(url, {
+    fetch(gouvx_api_url + "/ask/", {
         method: 'POST',
         body: postData,
         headers: {

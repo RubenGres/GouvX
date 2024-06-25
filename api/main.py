@@ -1,9 +1,14 @@
-from src.agents.gouvx import GouvX
+import requests
+import json
+import re
 
-from flask import Flask, request, Response, stream_with_context
+from flask import Flask, request, Response, stream_with_context, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO
-import json
+
+from src.agents.gouvx import GouvX
+
+url_pattern = re.compile(r'^https:\/\/(?:www\.)?((.*\.)?service-public\.fr|service-public\.fr|legifrance\.gouv\.fr)(?:\/.*)?$')
 
 app = Flask(__name__)
 CORS(app)
@@ -11,6 +16,31 @@ CORS(app)
 @app.route('/', methods=['GET'])
 def main():
     return "GouvX api is listening on route /ask"
+
+
+@app.route('/proxy', methods=['GET'])
+def proxy():
+    url = request.args.get('url')
+
+    if not url:
+        return jsonify({"error": "URL parameter is required"}), 400
+
+    # Check if the URL is from the allowed domains
+    if not url_pattern.match(url):
+        return jsonify({"error": "URL not allowed"}), 400
+
+    try:
+        # Fetch the content from the URL
+        response = requests.get(url)
+        response.raise_for_status()
+
+        # Sanitize the response content
+        sanitized_content = re.sub(r'<script.*?>.*?</script>', '', response.text, flags=re.S)
+
+        return Response(sanitized_content, content_type=response.headers['Content-Type'])
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": "Error fetching the URL", "details": str(e)}), 500
+
 
 @app.route('/ask/', methods=['POST'])
 def ask():
