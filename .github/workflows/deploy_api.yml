@@ -24,4 +24,4 @@ jobs:
       with:
         source: 'API'
         service: 'gouvx-api'
-        env_vars: 'OPENAI_API_KEY=${{secrets.OPENAI_API_KEY}}, PINECONE_API_KEY=${{ secrets.PINECONE_API_KEY}}'
+        env_vars: 'OPENAI_API_KEY=${{secrets.OPENAI_API_KEY}}, PINECONE_API_KEY=${{secrets.PINECONE_API_KEY}}, RUNPOD_ENDPOINT_ID=${{secrets.RUNPOD_ENDPOINT_ID}}, RUNPOD_API_KEY=${{secrets.RUNPOD_API_KEY}}'
