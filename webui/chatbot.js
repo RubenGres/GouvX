@@ -1,7 +1,7 @@
 chat_history = []
 
-//const url = 'https://gouvx-api-h7ruetg7ga-uc.a.run.app';
-const gouvx_api_url = 'https://ominous-cod-777qq6x9q67cr7xx-8080.app.github.dev'
+const gouvx_api_url = 'https://gouvx-api-h7ruetg7ga-uc.a.run.app';
+//const gouvx_api_url = 'https://ominous-cod-777qq6x9q67cr7xx-8080.app.github.dev'
 
 document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
