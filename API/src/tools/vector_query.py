@@ -96,7 +96,7 @@ A chaque question, demandez vous: est ce que cette question est à propos de la 
 
         formatted_results = []
         for match in results["matches"]:
-            title = match["metadata"]["url"]
+            title = match["metadata"]["title"]
             url = match["metadata"]["url"]
             content = match["metadata"].get("text", "")
 
