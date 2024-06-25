@@ -15,9 +15,9 @@
   <header>
     <a href="https://www.gouvx.fr/" class="gouvx-logo">gouv<red>x</red></a>
     <div class="info-box">
-        <b>Gouvx</b> s'appuie sur <a href="https://www.service-public.fr">service-public.fr</a> pour vous aider dans
+        <b>GouvX</b> s'appuie sur <a href="https://www.service-public.fr">service-public.fr</a> pour vous aider dans
         vos démarches administratives.
-        <a href="#about" data-bs-toggle="modal" data-bs-target="#overlayModal">En&nbsp;savoir&nbsp;plus</a>
+        <a href="#about" data-bs-toggle="modal" data-bs-target="#overlayAbout">En&nbsp;savoir&nbsp;plus</a>
     </div>
   </header>
 
@@ -40,25 +40,24 @@
         </div>
 
         <div class="input-group">
+            <button href="#settings" data-bs-toggle="modal" data-bs-target="#overlaySettings" class="params-icons" type="button" id="params-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4 .6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/></svg>
+            </button>
             <input class="form-control" placeholder="Envoyer un message" id="user-input"></input>
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="button" id="send-btn">
-                    <svg class="main_arrow" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="send-icon">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2 .01 7z"/>
-                        <path d="M0 0h24v24H0z" fill="none" />
-                    </svg>
-                </button>
-            </div>
+            <button class="params-icons" type="button" id="send-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M8 256C8 119 119 8 256 8s248 111 248 248-111 248-248 248S8 393 8 256zm292 116V256h70.9c10.7 0 16.1-13 8.5-20.5L264.5 121.2c-4.7-4.7-12.2-4.7-16.9 0l-115 114.3c-7.6 7.6-2.2 20.5 8.5 20.5H212v116c0 6.6 5.4 12 12 12h64c6.6 0 12-5.4 12-12z"/></svg>
+            </button>
         </div>
+        
     </div>
 
   </div>
 
-    <div class="modal fade" id="overlayModal" tabindex="-1" aria-labelledby="overlayModalLabel" aria-hidden="true">
+    <div class="modal fade" id="overlayAbout" tabindex="-1" aria-labelledby="overlayAboutLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="overlayModalLabel">Qu'est ce que gouvx ?</h5>
+                    <h5 class="modal-title" id="overlayAboutLabel">Qu'est ce que gouvx ?</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -78,7 +77,7 @@
                     <br><br>
                     En mettant en œuvre des modèles de langage avancés (LLM), le projet aspire également à démontrer
                     l'utilité démocratique de ces technologies émergentes. L'entièreté du code source est accessible librement sur <a
-                        href="https://github.com/RubenGres/GouvX" target="_blank"> Github</a>
+                        href="https://github.com/gouvx" target="_blank"> Github</a>
 
                     <br><br>
 
@@ -89,8 +88,33 @@
         </div>
     </div>
 
+    <div class="modal fade" id="overlaySettings" tabindex="-1" aria-labelledby="overlaySettingsLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="overlaySettingsLabel">Paramètres</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Base(s) de connaissance:
+                    <div id="sources">
+                        <div>
+                            <input type="checkbox" name="ServicePublic" checked />
+                            <label for="service_public"><b>service-public.fr</b> - renseignements administratifs</label>
+                        </div>
+                    
+                        <div>
+                            <input type="checkbox" name="Legifrance" checked/>
+                            <label for="legifrance"><b>legifrance.gouv.fr</b> - textes législatifs</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
-        @2023 <a href="https://rubengr.es">Ruben Gres</a> | <a href="https://github.com/RubenGres/GouvX" target="_blank">GitHub</a>
+        @2023 <a href="https://rubengr.es">Ruben Gres</a> | <a href="https://github.com/GouvX/GouvX" target="_blank">GitHub</a>
     </footer>
 </div>
 

@@ -1,7 +1,6 @@
 chat_history = []
 
-//const url = 'https://ominous-cod-777qq6x9q67cr7xx-8080.app.github.dev/ask/';
-const url = 'https://gouvx-api-h7ruetg7ga-uc.a.run.app/ask/';
+const url = 'https://gouvx-api-g26csh5qkq-ew.a.run.app/ask/';
 
 document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
@@ -65,46 +64,49 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
-function adjustRows(textarea) {
-    textarea.style.height = "45px";
-    textarea.style.height = (25 + textarea.scrollHeight) + "px"
-}
-
-
 function parse_response_metadata(metadata, message_number) {
     [metada_json, other_text] = metadata.split("\n")
-    
-    try {
-        let lastbotsources = document.getElementById("botsources" + message_number);
-    
-        const jsonData = JSON.parse(metada_json)
-        console.log(jsonData)
-    
-        const uniqueItems = jsonData.filter((item, index, self) =>
-            index === self.findIndex((t) => t.url === item.url)
-        );
-    
-        console.log(uniqueItems)
-    
-        const result = uniqueItems.map((item, index) => {
-            const { title, url } = item;
-            return `<a href="${url}" target="_blank">[${index + 1}] ${title}</a>`;
-        });
-    
-        sources = result.join('<br>');
-    
-        lastbotsources.innerHTML = sources
-    } finally  {
+
+    if (metada_json == "{}"){
         return other_text
     }
+    
+    let lastbotsources = document.getElementById("botsources" + message_number);
+    
+    const jsonData = JSON.parse(metada_json);
+
+    const uniqueItems = jsonData.filter((item, index, self) =>
+        index === self.findIndex((t) => t.url === item.url)
+    );
+
+    const result = uniqueItems.map((item, index) => {
+        const { title, url } = item;
+        return `<a href="${url}" target="_blank">[${index + 1}] ${title}</a>`;
+    });
+
+    sources = result.join('<br>');
+
+    lastbotsources.innerHTML = sources
+
+    return other_text
 }
 
+function getCheckedCheckboxNames(parentDivId) {
+    var checkedBoxes = document.querySelectorAll('#' + parentDivId + ' input[type="checkbox"]:checked');
+    var names = [];
+    
+    checkedBoxes.forEach(function(checkbox) {
+        names.push(checkbox.name);
+    });
+
+    return names;
+}
 
 function ask_gouvx(question, message_number) {
     const postData = new URLSearchParams({
-        q: question,
-        h: JSON.stringify(chat_history)
+        question: question,
+        history: JSON.stringify(chat_history),
+        sources: getCheckedCheckboxNames("sources")
     });
 
     const loader = document.querySelector('.loading')

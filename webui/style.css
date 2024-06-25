@@ -88,6 +88,7 @@
     height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
+    border-radius: 10px;
   }
   
   /* messages */
@@ -150,45 +151,25 @@
   /* inputs */
   .input-group {
     width: 100%;
-    position: relative;
   }
   
-  .input-group input {
-    height: auto;
-  }
-  
-  .input-group-append button {
-    background-color: #ffffff;
-  }
-
-  .input-group-append button {
-    background-color: #ffffff;
+  .params-icons {
+    background-color: #00000020;
+    width: 3em;
     border: 0;
-  }
-
-  .input-group-append button:hover {
-    background-color: #ffffff;
-  }
-
-  .main_arrow {
-    fill: rgb(171, 171, 171);
-  }
-
-  .main_arrow:hover {
-    fill: rgb(133, 133, 133);
-  }
-
-  #send-btn {
-    position: absolute;
-    height: 2.29em;
-    width: 2em;
-    right: 0;
-    bottom: 1px;
-    padding: 3px;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10;
+    fill: rgb(171, 171, 171);
+    border-radius: 10px;
+    &:hover {
+      fill: rgb(133, 133, 133);
+      transition: 0.2s ease-in-out;
+    }
+    &:active {
+      background-color: #00000036;
+      padding-bottom: 7px;
+    }
   }
 
   /* logo */
