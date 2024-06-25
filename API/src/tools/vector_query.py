@@ -1,5 +1,6 @@
 import re
 from .abstract_tool import LLMTool
+from ..call_embedder import embed_text
 from pinecone import Pinecone, ServerlessSpec
 
 
@@ -84,8 +85,7 @@ A chaque question, demandez vous: est ce que cette question est à propos de la 
             raise ValueError('please provide only one of text or embedding')
 
         if text:
-            embedding = [0]*1024 #TODO change this with a call to runpod serverless
-
+            embedding = embed_text(text)[0]
 
         results = index.query(
             namespace="servicepublic", # at the moment ontly servicepublic
