@@ -1,7 +1,7 @@
 chat_history = []
 
 //const url = 'http://localhost:8888/ask/';
-const url = 'https://gouvx-api-g26csh5qkq-ew.a.run.app/ask/';
+const url = 'https://gouvx-api-h7ruetg7ga-uc.a.run.app/ask/';
 
 document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
