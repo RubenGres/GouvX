@@ -1,6 +1,6 @@
 chat_history = []
 
-//const url = 'http://localhost:8888/ask/';
+//const url = 'https://ominous-cod-777qq6x9q67cr7xx-8080.app.github.dev/ask/';
 const url = 'https://gouvx-api-h7ruetg7ga-uc.a.run.app/ask/';
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -78,7 +78,7 @@ function parse_response_metadata(metadata, message_number) {
     try {
         let lastbotsources = document.getElementById("botsources" + message_number);
     
-        const jsonData = JSON.parse(metada_json)['data']['Get']['ServicePublic']
+        const jsonData = JSON.parse(metada_json)
         console.log(jsonData)
     
         const uniqueItems = jsonData.filter((item, index, self) =>

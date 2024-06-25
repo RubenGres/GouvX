@@ -61,9 +61,9 @@ A chaque question, demandez vous: est ce que cette question est à propos de la 
         """
 
         whole_paragraphs = {}
-        for match in response["matches"]:
-            title = match["metadata"]["url"]
-            content = match["metadata"].get("text", "")
+        for match in response:
+            title = match["url"]
+            content = match.get("content", "")
             
             # Check if the title already exists, append the content if it does.
             if title in whole_paragraphs:
@@ -94,6 +94,16 @@ A chaque question, demandez vous: est ce que cette question est à propos de la 
             include_metadata=True
         )
 
-        
+        formatted_results = []
+        for match in results["matches"]:
+            title = match["metadata"]["url"]
+            url = match["metadata"]["url"]
+            content = match["metadata"].get("text", "")
 
-        return results
+            formatted_results.append({
+                "title": title,
+                "url": url,
+                "content": content
+            })
+
+        return formatted_results
