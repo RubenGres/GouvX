@@ -3,7 +3,10 @@ name: Deploy api backend
 on:
   workflow_dispatch:
   push:
-    branches: ["main"]
+    branches:
+      - main
+    paths:
+      - 'api/**'
 
 jobs:
   deploy_back:
