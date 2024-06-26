@@ -35,4 +35,4 @@ jobs:
           RUNPOD_INFINITY_ID=${{secrets.RUNPOD_INFINITY_ID}},
           RUNPOD_VLLM_ID=${{secrets.RUNPOD_VLLM_ID}},
           RUNPOD_API_KEY=${{secrets.RUNPOD_API_KEY}},
-          VLLM_MODEL=AgentPublic/albertlight-7b
+          VLLM_MODEL=AgentPublic/guillaumetell-7b
