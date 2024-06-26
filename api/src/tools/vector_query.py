@@ -18,14 +18,12 @@ class VectorQuery(LLMTool):
     def get_system_prompt(self):
         tool_prompt="""Outil VectorQuery :
 Vous disposez de l'outil VectorQuery. Utilisez VectorQuery dans les circonstances suivantes :
-- L'utilisateur pose une question sur le droit Française
+- L'utilisateur pose une question sur le droit ou l'administration Française
 - L'utilisateur vous demande explicitement de rechercher quelque chose
 
 L'outil VectorQuery dispose des commandes suivantes :
 browse(query : str) Envoie une requête au moteur de recherche gouvx et affiche les résultats.
 exemple d'utilisation : browse(query : "comment aller mieux ?")
-
-A chaque question, demandez vous: est ce que cette question est à propos de la loi? Si oui utilisez l'outil.
 """
 
         return tool_prompt
