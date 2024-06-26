@@ -283,17 +283,32 @@
   }
 
   .suggestions div {
-    background-color: rgb(247, 247, 247);
-    padding: 10px 5px;
-    border: 1px rgb(211, 211, 211) solid;
     width: 129px;
+    height: 60px;
+    background-color: rgb(247, 247, 247);
+    padding: 10px;
+    border: 1px rgb(211, 211, 211) solid;
     text-align: center;
     font-size: 0.8em;
     border-radius: 10px;
-    transition: background-color 0.1s ease-in-out,
+    transition: background-color 0.1s ease-in-out;
   }
 
   .suggestions div:hover {
     cursor: pointer;
     background-color: rgb(240, 240, 240);
+  }
+
+  @media (max-width: 600px) {
+    .suggestions {
+      justify-content: space-between;
+      flex-direction: column;
+      height: 145px;
+      margin: inherit;
+    }
+
+    .suggestions div {
+      width: 100%;
+      height: 40px
+    }
   }
