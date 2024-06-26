@@ -196,9 +196,16 @@
   }
   
   .bot .profile-pic {
-    background-image: url('favicon.png');
     background-size: cover;
     margin-right: 10px;
+  }
+
+  .bot .profile-pic.gpt3 {
+    background-image: url('icons/gpt3.jpg');
+  }
+
+  .bot .profile-pic.albert {
+    background-image: url('icons/guillaumetell.jpg');
   }
   
   .user .profile-pic {

@@ -144,10 +144,12 @@ function ask_gouvx(question) {
         userContainer.appendChild(profilePic);
         userMessage.appendChild(userContainer);
 
+        const modelSelect = document.getElementById('modelSelect');
+
         const botMessage = `
             <div class="message-box bot">
                 <div class="bot">
-                    <div class="profile-pic"></div>
+                    <div class="profile-pic ${modelSelect.value}"></div>
                     <div class="message" id="botmessage${message_count}">
                         <div class="loading"></div>
                     </div>
@@ -170,6 +172,7 @@ function ask_gouvx(question) {
 
 function send_to_api(question, message_number) {
     const modelSelect = document.getElementById('modelSelect');
+    const use_vllm = modelSelect.value == "albert";
 
     const postData = new URLSearchParams({
         question: question,
