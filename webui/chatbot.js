@@ -169,10 +169,13 @@ function ask_gouvx(question) {
 }
 
 function send_to_api(question, message_number) {
+    const modelSelect = document.getElementById('modelSelect');
+
     const postData = new URLSearchParams({
         question: question,
         history: JSON.stringify(chat_history),
-        sources: getCheckedCheckboxNames("sources")
+        sources: getCheckedCheckboxNames("sources"),
+        use_vllm: modelSelect.value
     });
 
     const loader = document.querySelector('.loading')

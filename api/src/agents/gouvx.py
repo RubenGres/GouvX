@@ -13,7 +13,7 @@ class GouvX(AbstractAgent):
         self.RAG_NRESULTS = int(os.getenv('RAG_NRESULTS', '3'))
         self.last_query_results = None
 
-    def query(self, user_prompt, history=None, verbose=False):
+    def query(self, user_prompt, history=None, verbose=False, use_vllm=False):
         base_prompt = f"""Vous êtes GouvX, un assitant virtuel bienveillant et serviable permettant de naviguer les services du service public et répondre au question portant sur le droit civil, public ou privé.
 Répondez précisément et clairement aux questions de l'utilisateur en respectant les règles suivantes:
 - Ne JAMAIS inclure de lien
@@ -49,10 +49,16 @@ Répondez précisément et clairement aux questions de l'utilisateur en respecta
         if verbose:
             print("system_prompt:\n", system_prompt)
 
+        if use_vllm:
+            model = os.getenv('VLLM_MODEL')
+        else:
+            model = "gpt-3.5-turbo-16k"
+
         reply = query_llm(user_prompt=user_prompt,
                           system_prompt=system_prompt,
                           history=history,
-                          model="gpt-3.5-turbo-16k")
+                          model=model,
+                          use_vllm=use_vllm)
 
         if verbose:
             print("agent_answer:\n", agent_answer)

@@ -45,6 +45,9 @@ def proxy():
 @app.route('/ask/', methods=['POST'])
 def ask():
     user_prompt = request.form['question']
+
+    use_vllm = request.form['use_vllm'] == "True"
+
     sources = request.form['sources']
     sources = sources.split(",")
     
@@ -57,7 +60,7 @@ def ask():
         if len(history) > 10:
             raise ValueError("conversation too long")
         
-        llm_generator = gouvx_agent.query(user_prompt, history=history)
+        llm_generator = gouvx_agent.query(user_prompt, history=history, use_vllm=use_vllm)
         query_results = gouvx_agent.last_query_results
     except ValueError:
         query_results = [None]
@@ -69,5 +72,5 @@ def ask():
         for line in chatgpt_generator:
             yield line.encode('utf-8')
 
-    print("user:", request.remote_addr, "prompt:", user_prompt, "requires_search:", query_results is not None )
+    print("user:", request.remote_addr, " prompt:", user_prompt, " requires_search:", query_results is not None, " use_vllm:", use_vllm)
     return Response(stream_with_context(response_stream(llm_generator, query_results)), mimetype='text/plain', direct_passthrough=True)

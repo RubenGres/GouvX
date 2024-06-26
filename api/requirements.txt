@@ -1,5 +1,5 @@
 python-dotenv
-openai<1.0.0
+openai
 pinecone-client
 transformers
 sentence_transformers

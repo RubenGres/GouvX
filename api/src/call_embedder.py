@@ -3,10 +3,10 @@ import requests
 import os
 
 def embed_text(text: List[str]) -> List[List[float]]:
-    RUNPOD_ENDPOINT_ID = os.environ["RUNPOD_ENDPOINT_ID"]
+    RUNPOD_INFINITY_ID = os.environ["RUNPOD_INFINITY_ID"]
     RUNPOD_API_KEY = os.environ["RUNPOD_API_KEY"]
 
-    url = f"https://api.runpod.ai/v2/{RUNPOD_ENDPOINT_ID}/runsync"
+    url = f"https://api.runpod.ai/v2/{RUNPOD_INFINITY_ID}/runsync"
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {RUNPOD_API_KEY}"
