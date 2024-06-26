@@ -70,7 +70,9 @@
   .chat-container {
     height: 100%;
     padding-bottom: 55px;
-    max-width: 550px;
+    max-width: 600px;
+    width: auto;
+    min-width: 550px;
   }
 
   /* browser */
@@ -149,6 +151,7 @@
     height: 100%;
     overflow-y: auto;
     border-radius: 10px;
+    width: 100%;
   }
   
   /* messages */
@@ -279,7 +282,7 @@
     margin: 15px 0;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
   }
 
   .suggestions div {
