@@ -1,62 +1,18 @@
 chat_history = []
+let message_count = 0
 
 const gouvx_api_url = 'https://gouvx-api-h7ruetg7ga-uc.a.run.app';
 //const gouvx_api_url = 'https://ominous-cod-777qq6x9q67cr7xx-8080.app.github.dev'
 
 document.addEventListener("DOMContentLoaded", function () {
-    const chatBox = document.getElementById("chat-box");
-    const userInput = document.getElementById("user-input");
     const sendBtn = document.getElementById("send-btn");
-
-    let message_count = 0
-
+    const userInput = document.getElementById("user-input");
+        
     sendBtn.addEventListener("click", function () {
         const question = userInput.value.trim();
-
-        if (question !== "") {
-
-            message_count += 1;
-
-            const userMessage = document.createElement("div");
-            userMessage.className = "message-box user";
-
-            const userContainer = document.createElement("div");
-            userContainer.className = "user";
-
-            const profilePic = document.createElement("div");
-            profilePic.className = "profile-pic";
-
-            const messageContent = document.createElement("div");
-            messageContent.className = "message";
-            messageContent.textContent = question;
-
-            userContainer.appendChild(messageContent);
-            userContainer.appendChild(profilePic);
-            userMessage.appendChild(userContainer);
-
-            const botMessage = `
-                <div class="message-box bot">
-                    <div class="bot">
-                        <div class="profile-pic"></div>
-                        <div class="message" id="botmessage${message_count}">
-                            <div class="loading"></div>
-                        </div>
-                    </div>
-
-                    <div class="sources" id="botsources${message_count}"></div>
-                </div>
-            `;
-
-            chatBox.prepend(userMessage);
-            chatBox.innerHTML = botMessage + chatBox.innerHTML;
-
-            userInput.value = "";
-            userInput.style.height = "45px";
-
-            ask_gouvx(question, message_count);
-
+        ask_gouvx(question);
         }
-    });
+    );
 
     userInput.addEventListener("keyup", function (event) {
         if (event.key === "Enter") {
@@ -65,10 +21,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
+/* browser */
 function set_browser_page(url) {
     // Check if the user is on a mobile device
     if (/Mobi|Android/i.test(navigator.userAgent)) {
+        //open url in a new tab 
+        window.open(url, '_blank');
         return;
     }
 
@@ -99,7 +57,6 @@ function highlight_browser() {
     browserElement.appendChild(overlay);
 }
 
-// Remove highlight
 function unhighlight_browser() {
     const browserElement = document.getElementById('browser');
 
@@ -156,7 +113,60 @@ function getCheckedCheckboxNames(parentDivId) {
     return names;
 }
 
-function ask_gouvx(question, message_number) {
+function ask_gouvx(question) {
+    const chatBox = document.getElementById("chat-box");
+
+    // if div with class suggestions exist, remove it
+    let suggestionsDiv = document.querySelector('.suggestions');
+    if (suggestionsDiv) {
+        suggestionsDiv.remove();
+    }
+
+    if (question !== "") {
+        message_count += 1;
+
+        const userMessage = document.createElement("div");
+        userMessage.className = "message-box user";
+
+        const userContainer = document.createElement("div");
+        userContainer.className = "user";
+
+        const profilePic = document.createElement("div");
+        profilePic.className = "profile-pic";
+
+        const messageContent = document.createElement("div");
+        messageContent.className = "message";
+        messageContent.textContent = question;
+
+        userContainer.appendChild(messageContent);
+        userContainer.appendChild(profilePic);
+        userMessage.appendChild(userContainer);
+
+        const botMessage = `
+            <div class="message-box bot">
+                <div class="bot">
+                    <div class="profile-pic"></div>
+                    <div class="message" id="botmessage${message_count}">
+                        <div class="loading"></div>
+                    </div>
+                </div>
+
+                <div class="sources" id="botsources${message_count}"></div>
+            </div>
+        `;
+
+        chatBox.prepend(userMessage);
+        chatBox.innerHTML = botMessage + chatBox.innerHTML;
+
+        send_to_api(question, message_count);
+
+        const userInput = document.getElementById("user-input");
+        userInput.value = "";
+        userInput.style.height = "45px";
+    }
+}
+
+function send_to_api(question, message_number) {
     const postData = new URLSearchParams({
         question: question,
         history: JSON.stringify(chat_history),

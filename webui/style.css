@@ -268,3 +268,32 @@
     src: url(fonts/Marianne-Bold.woff);
     font-weight: bold;
   }
+
+  /* params */
+  .params {
+    width: 500px;
+  }
+
+  /* suggestions */
+  .suggestions {
+    margin: 15px 35px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .suggestions div {
+    background-color: rgb(247, 247, 247);
+    padding: 10px 5px;
+    border: 1px rgb(211, 211, 211) solid;
+    width: 129px;
+    text-align: center;
+    font-size: 0.8em;
+    border-radius: 10px;
+    transition: background-color 0.1s ease-in-out,
+  }
+
+  .suggestions div:hover {
+    cursor: pointer;
+    background-color: rgb(240, 240, 240);
+  }
