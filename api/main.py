@@ -1,4 +1,5 @@
 import requests
+import logging
 import json
 import re
 
@@ -56,22 +57,22 @@ def ask():
 
     gouvx_agent = GouvX(sources)
 
-    try:
-        if len(history) > 10:
-            raise ValueError("conversation too long")
-        
-        llm_generator = gouvx_agent.query(user_prompt, history=history, use_vllm=use_vllm)
-        query_results = gouvx_agent.last_query_results
-    except ValueError as e:
-        query_results = [None]
-        llm_generator = (lambda _: "Il y a eu une erreur, merci de réessayer plus tard")("")
-        print(e.with_traceback())
-
     def response_stream(chatgpt_generator, query_results=None):
         yield json.dumps(query_results if query_results else []).encode('utf-8')
         yield "\n".encode('utf-8')
         for line in chatgpt_generator:
             yield line.encode('utf-8')
+
+    try:
+        if len(history) > 20:
+            raise ValueError("conversation too long")
+        
+        llm_generator = gouvx_agent.query(user_prompt, history=history, use_vllm=use_vllm)
+        query_results = gouvx_agent.last_query_results
+    except ValueError:
+        query_results = [None]
+        llm_generator = (lambda _: "Il y a eu une erreur, merci de réessayer plus tard")("")
+        logging.error("An error occurred", exc_info=True)
 
     print("user:", request.remote_addr, " prompt:", user_prompt, " requires_search:", query_results is not None, " use_vllm:", use_vllm)
     return Response(stream_with_context(response_stream(llm_generator, query_results)), mimetype='text/plain', direct_passthrough=True)
