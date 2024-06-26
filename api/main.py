@@ -62,9 +62,10 @@ def ask():
         
         llm_generator = gouvx_agent.query(user_prompt, history=history, use_vllm=use_vllm)
         query_results = gouvx_agent.last_query_results
-    except ValueError:
+    except ValueError as e:
         query_results = [None]
-        llm_generator = (lambda _: "Désolé mais j'ai atteint mon quota de réponses pour cette conversation")("")
+        llm_generator = (lambda _: "Il y a eu une erreur, merci de réessayer plus tard")("")
+        print(e)
 
     def response_stream(chatgpt_generator, query_results=None):
         yield json.dumps(query_results if query_results else []).encode('utf-8')
