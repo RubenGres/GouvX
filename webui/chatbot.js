@@ -97,7 +97,9 @@ function parse_response_metadata(metadata, message_number) {
     sources = result.join('<br>');
     lastbotsources.innerHTML = sources
     
-    set_browser_page(uniqueItems[0].url);
+    //only set the browser page if we are not on mobile
+    if (!(/Mobi|Android/i.test(navigator.userAgent)))
+        set_browser_page(uniqueItems[0].url);
     
     return other_text
 }
