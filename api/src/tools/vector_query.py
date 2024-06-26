@@ -1,7 +1,10 @@
 import re
+import logging
+
+from pinecone import Pinecone, ServerlessSpec
+
 from .abstract_tool import LLMTool
 from ..call_embedder import embed_text
-from pinecone import Pinecone, ServerlessSpec
 
 
 class VectorQuery(LLMTool):
@@ -33,7 +36,10 @@ exemple d'utilisation : browse(query : "comment aller mieux ?")
         pattern = r"^browse\((.*?)\)$"
         match = re.search(pattern, line)
 
-        if match:
+        if not match:
+            return ""
+
+        try:
             arguments = match.group(1)
             arguments_dict = {}
             for arg in arguments.split(','):
@@ -41,6 +47,8 @@ exemple d'utilisation : browse(query : "comment aller mieux ?")
                 arguments_dict[key.strip()] = value.strip()
             
             return self.apply(arguments_dict)
+        except Exception:
+            logging.error("An error occurred", exc_info=True)
         
         return ""
 
