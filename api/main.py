@@ -65,7 +65,7 @@ def ask():
     except ValueError as e:
         query_results = [None]
         llm_generator = (lambda _: "Il y a eu une erreur, merci de réessayer plus tard")("")
-        print(e)
+        print(e.with_traceback())
 
     def response_stream(chatgpt_generator, query_results=None):
         yield json.dumps(query_results if query_results else []).encode('utf-8')
