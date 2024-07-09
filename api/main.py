@@ -9,8 +9,7 @@ from flask_cors import CORS
 from flask_socketio import SocketIO
 
 from src.agents.gouvx import GouvX
-
-url_pattern = re.compile(r'^https:\/\/(?:www\.)?((.*\.)?service-public\.fr|service-public\.fr|legifrance\.gouv\.fr)(?:\/.*)?$')
+from src import simpleproxy
 
 app = Flask(__name__)
 CORS(app)
@@ -23,61 +22,9 @@ def main():
 @app.route('/proxy', methods=['GET'])
 def proxy():
     url = request.args.get('url')
+    response = simpleproxy.proxy(url)
+    return response
 
-    if not url:
-        return jsonify({"error": "URL parameter is required"}), 400
-
-    # Check if the URL is from the allowed domains
-    if not url_pattern.match(url):
-        return jsonify({"error": "URL not allowed"}), 400
-
-    try:
-        # Fetch the content from the URL
-        response = requests.get(url)
-        response.raise_for_status()
-
-        def get_base_url(url):
-            parsed_url = urlparse(url)
-            base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
-            return base_url
-
-        # Redirects links to the proxy
-        def fix_links(match):
-            attribute = match.group(1)
-            link = match.group(2)
-            if link.startswith(('http://', 'https://')):
-                # Absolute links
-                return f'{attribute}="/proxy?url={link}"'
-            else:
-                # Relative links
-                base_url = get_base_url(url)
-                new_link = base_url + link if link.startswith('/') else base_url + '/' + link
-                return f'{attribute}="/proxy?url={new_link}"'
-
-        def fix_css_urls(match):
-            link = match.group(1).strip('\'"')
-            if link.startswith(('http://', 'https://')):
-                # Absolute URLs
-                return f'url("/proxy?url={link}")'
-            else:
-                # Relative URLs
-                base_url = get_base_url(url)
-                new_link = base_url + link if link.startswith('/') else base_url + '/' + link
-                return f'url("/proxy?url={new_link}")'
-
-        # Sanitize the response content
-        sanitized_content = re.sub(r'<script.*?>.*?</script>', '', response.text, flags=re.S)
-        sanitized_content = response.text
-
-        # Replace href, src, and srcset links
-        final_html = re.sub(r'(href|src|srcset)=["\']([^"\']+)["\']', fix_links, sanitized_content)
-
-        # Replace CSS url() links
-        final_html = re.sub(r'url\(["\']?([^"\')]+)["\']?\)', fix_css_urls, final_html)
-
-        return Response(final_html, content_type=response.headers['Content-Type'])
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": "Error fetching the URL", "details": str(e)}), 500
 
 @app.route('/ask/', methods=['POST'])
 def ask():
