@@ -1,3 +1,4 @@
+from urllib.parse import urlparse
 import requests
 import logging
 import json
@@ -35,13 +36,48 @@ def proxy():
         response = requests.get(url)
         response.raise_for_status()
 
+        def get_base_url(url):
+            parsed_url = urlparse(url)
+            base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+            return base_url
+
+        # Redirects links to the proxy
+        def fix_links(match):
+            attribute = match.group(1)
+            link = match.group(2)
+            if link.startswith(('http://', 'https://')):
+                # Absolute links
+                return f'{attribute}="/proxy?url={link}"'
+            else:
+                # Relative links
+                base_url = get_base_url(url)
+                new_link = base_url + link if link.startswith('/') else base_url + '/' + link
+                return f'{attribute}="/proxy?url={new_link}"'
+
+        def fix_css_urls(match):
+            link = match.group(1).strip('\'"')
+            if link.startswith(('http://', 'https://')):
+                # Absolute URLs
+                return f'url("/proxy?url={link}")'
+            else:
+                # Relative URLs
+                base_url = get_base_url(url)
+                new_link = base_url + link if link.startswith('/') else base_url + '/' + link
+                return f'url("/proxy?url={new_link}")'
+
         # Sanitize the response content
         sanitized_content = re.sub(r'<script.*?>.*?</script>', '', response.text, flags=re.S)
+        sanitized_content = response.text
 
-        return Response(sanitized_content, content_type=response.headers['Content-Type'])
+        # Replace href, src, and srcset links
+        final_html = re.sub(r'(href|src|srcset)=["\']([^"\']+)["\']', fix_links, sanitized_content)
+
+        # Replace CSS url() links
+        final_html = re.sub(r'url\(["\']?([^"\')]+)["\']?\)', fix_css_urls, final_html)
+
+        return Response(final_html, content_type=response.headers['Content-Type'])
     except requests.exceptions.RequestException as e:
         return jsonify({"error": "Error fetching the URL", "details": str(e)}), 500
-
 
 @app.route('/ask/', methods=['POST'])
 def ask():
@@ -76,3 +112,6 @@ def ask():
 
     print("user:", request.remote_addr, " prompt:", user_prompt, " requires_search:", query_results is not None, " use_vllm:", use_vllm)
     return Response(stream_with_context(response_stream(llm_generator, query_results)), mimetype='text/plain', direct_passthrough=True)
+
+if __name__ == "__main__":
+    app.run(debug=True)
