@@ -1,7 +1,6 @@
 from urllib.parse import urlparse
 import requests
-import logging
-import json
+import difflib
 import re
 
 from flask import jsonify, Response
@@ -41,6 +40,28 @@ def fix_css_urls(match, url):
         base_url = get_base_url(url)
         new_link = base_url + link if link.startswith('/') else base_url + '/' + link
         return f'url("/proxy?url={new_link}")'
+
+
+def find_longest_match_substring(source_string, query):
+    """
+    Finds the longest *fuzzy* matching substring between the source string and the query string.
+    
+    Parameters:
+    source_string (str): The string in which to search for the longest matching substring.
+    query (str): The string to find the longest matching substring within the source string.
+    
+    Returns:
+    tuple: A tuple (start_index, end_index) representing the start and end indices of the longest 
+           matching substring in the source_string. If no match is found, returns None.
+    """
+
+    matcher = difflib.SequenceMatcher(None, source_string, query)
+    match = matcher.find_longest_match(0, len(source_string), 0, len(query))
+    
+    if match.size != 0:
+        return (match.a, match.a + match.size)
+    else:
+        return None
 
 
 def proxy(url):
