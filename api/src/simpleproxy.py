@@ -91,3 +91,20 @@ def proxy(url):
         return Response(final_html, content_type=response.headers['Content-Type'])
     except requests.exceptions.RequestException as e:
         return jsonify({"error": "Error fetching the URL", "details": str(e)}), 500
+    
+
+def highlight_text_in_webpage(url, text_to_highlight):
+    response = proxy(url)
+    text = response.get_data(as_text=True)
+
+    opening_tag = "<div style='background-color: yellow'>"
+    closing_tag = "</div>"
+
+    indexes = find_longest_match_substring(text, text_to_highlight)
+    if not indexes:
+        return response
+
+    start, highlighted, end = text[:indexes[0]], text[indexes[0]:indexes[1]], text[indexes[1]:]
+    response.set_data(start + opening_tag + highlighted + closing_tag + end)
+
+    return response
