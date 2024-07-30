@@ -8,3 +8,4 @@ flask
 flask-cors
 flask-socketio
 pproxy
+beautifulsoup4

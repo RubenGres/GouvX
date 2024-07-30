@@ -11,7 +11,6 @@ from urllib.parse import urljoin, urlparse
 from threading import Thread
 from bs4 import BeautifulSoup
 import asyncio
-import threading
 from flask import jsonify, Response
 
 allowed_urls = [
