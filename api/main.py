@@ -13,6 +13,7 @@ from src import simpleproxy
 
 app = Flask(__name__)
 CORS(app)
+simpleproxy.setup()
 
 @app.route('/', methods=['GET'])
 def main():

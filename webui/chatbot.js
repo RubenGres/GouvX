@@ -1,8 +1,8 @@
 chat_history = []
 let message_count = 0
 
-const gouvx_api_url = 'https://gouvx-api-h7ruetg7ga-uc.a.run.app';
-//const gouvx_api_url = 'https://ominous-cod-777qq6x9q67cr7xx-8080.app.github.dev'
+//const gouvx_api_url = 'https://gouvx-api-h7ruetg7ga-uc.a.run.app';
+const gouvx_api_url = 'https://zany-funicular-966vvrx9vjrc65w-5000.app.github.dev'
 
 document.addEventListener("DOMContentLoaded", function () {
     const sendBtn = document.getElementById("send-btn");
@@ -78,6 +78,7 @@ function parse_response_metadata(metadata, message_number) {
     
     const jsonData = JSON.parse(metada_json);
 
+    // TODO modify this to mention different parts of the article
     const uniqueItems = jsonData.filter((item, index, self) =>
         index === self.findIndex((t) => t.url === item.url)
     );
@@ -172,7 +173,6 @@ function ask_gouvx(question) {
 
 function send_to_api(question, message_number) {
     const modelSelect = document.getElementById('modelSelect');
-    const use_vllm = modelSelect.value == "albert";
 
     const postData = new URLSearchParams({
         question: question,
