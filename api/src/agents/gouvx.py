@@ -1,5 +1,6 @@
 import os
 import re
+import json
 from ..prompt_builder import SystemPromptBuilder
 from ..query_llm import query_llm
 from ..agents.abstract_agent import AbstractAgent
@@ -13,7 +14,7 @@ class GouvX(AbstractAgent):
         self.RAG_NRESULTS = int(os.getenv('RAG_NRESULTS', '3'))
         self.last_query_results = None
 
-    def query(self, user_prompt, history=None, verbose=False, use_vllm=False):
+    def query(self, user_prompt, history=None, use_vllm=False):
         base_prompt = f"""Vous êtes GouvX, un assitant virtuel bienveillant et serviable permettant de naviguer les services du service public et répondre au question portant sur le droit civil, public ou privé.
 Répondez précisément et clairement aux questions de l'utilisateur en respectant les règles suivantes:
 - Ne JAMAIS inclure de lien
@@ -21,33 +22,23 @@ Répondez précisément et clairement aux questions de l'utilisateur en respecta
 - En repondant à une question, respecter la convention de nommage: "Selon service-public.fr ..."
 - Repondre en texte clair, sans balises ou marqueurs"""
 
+        tools = [
+            VectorQuery(pinecone_key=self.PINECONE_API_KEY, n_results=self.RAG_NRESULTS, sources=self.sources)
+        ]
+
         # call the tool caller agent to make a decision
-        agent_answer = ToolCaller().query(user_prompt)
+        tool_caller = ToolCaller(tools)
+        tool_response = tool_caller.query(user_prompt=user_prompt)
 
-        if verbose:
-            print("tool_caller:\n", agent_answer)
-        
-        pattern = r"need_tool: (\w+)\s*function_call: (.*)"
-        match = re.match(pattern, agent_answer)
-        
-        formatted_response = ""
-        if match:
-            # Extract the matched groups
-            need_tool = match.group(1)
-            function_call = match.group(2)
-            need_tool = need_tool.lower() == 'true'
+        self.last_query_results = tool_response["data"]
 
-            if need_tool:
-                # query the vector database
-                query_tool = VectorQuery(pinecone_key=self.PINECONE_API_KEY, n_results=self.RAG_NRESULTS, sources=self.sources)
-                formatted_response = query_tool.trigger(function_call)
-                self.last_query_results = query_tool.last_query_results
-        
+        if tool_response["tool_name"]:
+            print("used tool", tool_response["tool_name"], "args:", tool_response["args"])
+
         system_prompt = SystemPromptBuilder(base_prompt).build_system_prompt()
-        system_prompt += formatted_response
-
-        if verbose:
-            print("system_prompt:\n", system_prompt)
+        
+        if tool_response["prompt"]:
+            system_prompt += tool_response["prompt"]
 
         if use_vllm:
             model = os.getenv('VLLM_MODEL')
@@ -59,8 +50,5 @@ Répondez précisément et clairement aux questions de l'utilisateur en respecta
                           history=history,
                           model=model,
                           use_vllm=use_vllm)
-
-        if verbose:
-            print("agent_answer:\n", agent_answer)
 
         return reply

@@ -12,7 +12,7 @@ def get_openai_client(use_vllm=False):
         base_url=f"https://api.runpod.ai/v2/{RUNPOD_VLLM_ID}/openai/v1",
     )
 
-def query_llm(user_prompt, system_prompt=None, history=None, model="gpt-4-turbo-preview", use_vllm=False):
+def query_llm(user_prompt, system_prompt=None, history=None, model="gpt-4-turbo-preview", use_vllm=False, response_format=None):
     """query the LLM, return a generator for each output token"""
 
     messages = []
@@ -36,6 +36,7 @@ def query_llm(user_prompt, system_prompt=None, history=None, model="gpt-4-turbo-
         model=model,
         messages=messages,
         stream=True,
+        response_format=response_format
     ):
         content = chunk.choices[0].delta.content
         if content is not None:

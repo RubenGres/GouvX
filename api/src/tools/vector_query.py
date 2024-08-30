@@ -11,13 +11,14 @@ class VectorQuery(LLMTool):
     """Vector query tool using vector DB"""
 
     def __init__(self, pinecone_key=None, n_results=3, sources=None):
+        super().__init__("browse")
+
         if pinecone_key:
             self.client = Pinecone(api_key=pinecone_key)
 
         self.n_results=n_results
         self.sources = sources
-        self.last_query_results = None
-
+        
     def get_system_prompt(self):
         tool_prompt="""Outil VectorQuery :
 Vous disposez de l'outil VectorQuery. Utilisez VectorQuery dans les circonstances suivantes :
@@ -27,40 +28,18 @@ Vous disposez de l'outil VectorQuery. Utilisez VectorQuery dans les circonstance
 L'outil VectorQuery dispose des commandes suivantes :
 browse(query : str) Envoie une requête au moteur de recherche gouvx et affiche les résultats.
 exemple d'utilisation : browse(query : "comment aller mieux ?")
+
+Utiliser exclusivement le json pour faire appel à cet outil
 """
 
         return tool_prompt
 
-
-    def trigger(self, line):
-        pattern = r"^browse\((.*?)\)$"
-        match = re.search(pattern, line)
-
-        if not match:
-            return ""
-
-        try:
-            arguments = match.group(1)
-            arguments_dict = {}
-            for arg in arguments.split(','):
-                key, value = arg.strip().split(':')
-                arguments_dict[key.strip()] = value.strip()
-            
-            return self.apply(arguments_dict)
-        except Exception:
-            logging.error("An error occurred", exc_info=True)
-        
-        return ""
-
-
     def apply(self, args):
         query = args['query']
 
-        response = self.query_db(text=query, n_results=self.n_results, sources=self.sources)
-        self.last_query_results = response
+        db_response = self.query_db(text=query, n_results=self.n_results, sources=self.sources)
 
         system_prompt = """
-
         A l'aide de ces documents, répondre à la question de l'utilisateur:
         - Si les documents ne permettent pas de repondre a la question de l'utilisateur, répondre que vous n'avez pas réussi à trouver de réponse
         - Si nécessaire, mentionner les documents par leur numéro
@@ -69,7 +48,7 @@ exemple d'utilisation : browse(query : "comment aller mieux ?")
         """
 
         whole_paragraphs = {}
-        for match in response:
+        for match in db_response:
             title = match["url"]
             content = match.get("content", "")
             
@@ -82,8 +61,12 @@ exemple d'utilisation : browse(query : "comment aller mieux ?")
         for i, (title, paragraph) in enumerate(whole_paragraphs.items(), start=1):
             system_prompt += f"\n\nDocument [{i}]: {title}\n{paragraph}"
 
-        return system_prompt
+        browser_response = {
+            "prompt": system_prompt,
+            "data": db_response
+        }
 
+        return browser_response
 
     def query_db(self, text=None, embedding=None, n_results=3, sources=None):
         index = self.client.Index("gouvx")

@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /* browser */
-function set_browser_page(url) {
+function set_browser_page(url, highlight_string="") {
     // Check if the user is on a mobile device
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         //open url in a new tab 
@@ -40,7 +40,9 @@ function set_browser_page(url) {
 
     //clear the iframe before changing src
     iframeElement.src = '';
-    iframeElement.src = gouvx_api_url + `/proxy?url=${encodeURIComponent(url)}`;
+
+    // TODO make sure the highlight_string is usable (url safe)
+    iframeElement.src = gouvx_api_url + `/proxy?url=${encodeURIComponent(url)}&highlight=${encodeURIComponent(highlight_string)}}`;
 }
 
 function close_browser() {
@@ -84,8 +86,8 @@ function parse_response_metadata(metadata, message_number) {
     );
 
     const result = uniqueItems.map((item, index) => {
-        const { title, url } = item;
-        return `<span onmouseout="unhighlight_browser()" onmouseenter="highlight_browser()" onclick="set_browser_page('${url}')"><b>[${index + 1}]</b> ${title}</span>
+        const { title, url, content } = item;
+        return `<span onmouseout="unhighlight_browser()" onmouseenter="highlight_browser()" onclick="set_browser_page('${url}, ${content}')"><b>[${index + 1}]</b> ${title}</span>
         
         <a href="${url}" target="_blank class="icon">
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15" viewBox="0 0 30 30">
@@ -99,8 +101,9 @@ function parse_response_metadata(metadata, message_number) {
     lastbotsources.innerHTML = sources
     
     //only set the browser page if we are not on mobile
-    if (!(/Mobi|Android/i.test(navigator.userAgent)))
-        set_browser_page(uniqueItems[0].url);
+    if (!(/Mobi|Android/i.test(navigator.userAgent))) {
+        set_browser_page(uniqueItems[0].url, uniqueItems[0].content);
+    }
     
     return other_text
 }

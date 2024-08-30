@@ -23,7 +23,9 @@ def main():
 @app.route('/proxy', methods=['GET'])
 def proxy():
     url = request.args.get('url')
-    response = simpleproxy.proxy(url)
+    highlight = request.args.get('highlight')
+
+    response = simpleproxy.highlight_text_in_webpage(url, highlight)
     return response
 
 

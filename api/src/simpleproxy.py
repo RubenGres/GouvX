@@ -23,10 +23,6 @@ def setup_proxy_thread():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     handler = loop.run_until_complete(run_pproxy())
-    try:
-        loop.run_forever()
-    except KeyboardInterrupt:
-        print('exit!')
 
     handler.close()
     loop.run_until_complete(handler.wait_closed())
@@ -107,6 +103,9 @@ def find_longest_match_substring(source_string, query):
            matching substring in the source_string. If no match is found, returns None.
     """
 
+    if not query:
+        return None
+
     matcher = difflib.SequenceMatcher(None, source_string, query)
     match = matcher.find_longest_match(0, len(source_string), 0, len(query))
     
@@ -118,12 +117,19 @@ def find_longest_match_substring(source_string, query):
 
 def highlight_text_in_webpage(url, text_to_highlight):
     response = proxy(url)
+
+    if not text_to_highlight:
+        return response
+
     text = response.get_data(as_text=True)
 
-    opening_tag = "<div style='background-color: yellow'>"
+    opening_tag = "<div class='gouvx-highlighted' style='background-color: yellow'>"
     closing_tag = "</div>"
 
     indexes = find_longest_match_substring(text, text_to_highlight)
+
+    print("indexes", indexes)
+
     if not indexes:
         return response
 
