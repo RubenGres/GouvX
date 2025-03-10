@@ -1,7 +1,7 @@
 chat_history = []
 let message_count = 0
 
-const gouvx_api_url = 'https://gouvx-api-h7ruetg7ga-uc.a.run.app';
+const gouvx_api_url = 'https://gouvx-api-885887369079.us-central1.run.app';
 //const gouvx_api_url = 'https://zany-funicular-966vvrx9vjrc65w-5000.app.github.dev'
 
 document.addEventListener("DOMContentLoaded", function () {
